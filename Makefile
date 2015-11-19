@@ -1,8 +1,8 @@
 CC = gcc
 CFLAGS = -std=c99 -Wall -Wextra 
 
-HEADERS = bloomfilter.h minsketch.h
-OBJECTS = bloomfilter.o minsketch.o main.o
+HEADERS = hash.h bloomfilter.h minsketch.h
+OBJECTS = hash.o bloomfilter.o minsketch.o main.o
 
 default: ec
 

@@ -3,10 +3,11 @@
 #include <stdbool.h>
 
 #include "minsketch.h"
+#include "hash.h"
 
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
-static int minsketch_hash(const char *str, int row, int max);
+static int minsketch_hash(minsketch *m, const char *str, int row);
 
 minsketch* minsketch_new(int w, int d) {
 	minsketch *m = malloc(sizeof (minsketch));
@@ -39,7 +40,7 @@ bool minsketch_add(minsketch *m, const char *str) {
 		return false;
 	}
 	for (int i = 0; i < m->d; i++) {
-		int j = minsketch_hash(str, i, m->d);
+		int j = minsketch_hash(m, str, i);
 		m->rows[i][j]++;
 	}
 	return true;
@@ -51,7 +52,7 @@ int minsketch_get(minsketch *m, const char *str) {
 	}
 	int min = ~0U >> 1;
 	for (int i = 0; i < m->d; i++) {
-		int j = minsketch_hash(str, i, m->d);
+		int j = minsketch_hash(m, str, i);
 		min = MIN(min, m->rows[i][j]);
 		if (min == 0) {
 			return 0;
@@ -68,15 +69,6 @@ void minsketch_free(minsketch *m) {
 	free(m);
 }
 
-static int minsketch_hash(const char *str, int row, int max) {
-	if (str == NULL) {
-		return 0;
-	}
-	int hash = 5381;
-	while (*str++) {
-		hash = ((hash << 5) + hash) + *str;
-	}
-	hash += row;
-	hash %= max;
-	return hash;
+static int minsketch_hash(minsketch *m, const char *str, int row) {
+	return (hash(str) + row)%(m->d);
 }
