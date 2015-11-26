@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "minsketch.h"
 #include "hash.h"
@@ -10,19 +11,19 @@
 static int minsketch_hash(minsketch *m, const char *str, int row);
 
 minsketch* minsketch_new(int w, int d) {
-	minsketch *m = malloc(sizeof (minsketch));
+	minsketch *m = malloc(sizeof *m);
 	if (m == NULL) {
 		return NULL;
 	}
 	m->w = w;
 	m->d = d;
-	m->rows = malloc(sizeof(int) * d);
+	m->rows = malloc(m->d * sizeof *m->rows);
 	if (m->rows == NULL) {
 		free(m);
 		return NULL;
 	}
-	for (int i = 0; i < d; i++) {
-		if ((m->rows[i] = malloc(sizeof(int) * w)) == 0) {
+	for (int i = 0; i < m->d; i++) {
+		if ((m->rows[i] = calloc(m->w, sizeof *m->rows[i])) == NULL) {
 			for (int j = i; j >= 0; j--) {
 				free(m->rows[j]);
 			}
@@ -30,26 +31,19 @@ minsketch* minsketch_new(int w, int d) {
 			free(m);
 			return NULL;
 		}
-		memset(m->rows[i], 0, d * sizeof(int));
 	}
 	return m;
 }
 
 bool minsketch_add(minsketch *m, const char *str) {
-	if (m == NULL || str == NULL) {
-		return false;
-	}
 	for (int i = 0; i < m->d; i++) {
 		int j = minsketch_hash(m, str, i);
-		m->rows[i][j]++;
+    m->rows[i][j]++;
 	}
 	return true;
 }
 
 int minsketch_get(minsketch *m, const char *str) {
-	if (m == NULL || str == NULL) {
-		return -1;
-	}
 	int min = ~0U >> 1;
 	for (int i = 0; i < m->d; i++) {
 		int j = minsketch_hash(m, str, i);
@@ -61,6 +55,16 @@ int minsketch_get(minsketch *m, const char *str) {
 	return min;
 }
 
+float minsketch_load_factor(minsketch *m) {
+	int hits = 0;
+	for (int i = 0; i < m->d; i++) {
+		for (int j = 0; j < m->w; j++) {
+			hits += MIN(m->rows[i][j], 1);
+		}
+	}
+	return ((float)hits)/(m->d * m->w);
+}
+
 void minsketch_free(minsketch *m) {
 	for (int i = 0; i < m->d; i++) {
 		free(m->rows[i]);
@@ -70,5 +74,5 @@ void minsketch_free(minsketch *m) {
 }
 
 static int minsketch_hash(minsketch *m, const char *str, int row) {
-	return (hash(str) + row)%(m->d);
+	return hash(str, row)%(m->w);
 }

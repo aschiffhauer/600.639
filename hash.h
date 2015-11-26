@@ -1,1 +1,1 @@
-int hash(const char *str);
+int hash(const char *str, int seed);

@@ -5,7 +5,7 @@
 #include "hash.h"
 
 bloomfilter *bloomfilter_new(int m, int k) {
-	bloomfilter *b = malloc(sizeof(bloomfilter));
+	bloomfilter *b = malloc(sizeof b);
 	if (b == NULL) {
 		return 0;
 	}
@@ -27,7 +27,7 @@ bool bloomfilter_add(bloomfilter *b, const char *str) {
 		return false;
 	}
 	for (int i = 0; i < b->len; i++) {
-		int val = hash(str) + i;
+		int val = hash(str, i);
 		int index = val / sizeof(int);
 		int offset = val % index;
 		b->bit_array[index] = b->bit_array[index] | (1 << offset);
@@ -37,7 +37,7 @@ bool bloomfilter_add(bloomfilter *b, const char *str) {
 
 bool bloomfilter_get(bloomfilter *b, const char *str) {
 	for (int i = 0; i < b->len; i++) {
-		int val = hash(str) + i;
+		int val = hash(str, i);
 		int index = val / sizeof(int);
 		int offset = val % index;
 		if (b->bit_array[index] & (1 << offset)) {
