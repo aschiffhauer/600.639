@@ -64,3 +64,4 @@ build.sh
 
 # C
 *.o
+*.xcodeproj*
