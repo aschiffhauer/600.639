@@ -16,7 +16,7 @@
 )}
 
 typedef struct {
-	int* bit_array;
+	int* bits;
 	int k;
 	int len;
 } bloomfilter;

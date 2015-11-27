@@ -38,7 +38,7 @@ minsketch* minsketch_new(int w, int d) {
 bool minsketch_add(minsketch *m, const char *str) {
 	for (int i = 0; i < m->d; i++) {
 		int j = minsketch_hash(m, str, i);
-    m->rows[i][j]++;
+		m->rows[i][j]++;
 	}
 	return true;
 }
