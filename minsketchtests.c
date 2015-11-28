@@ -1,15 +1,18 @@
+#include <stdbool.h>
 #include <stdio.h>
 
 #include "minsketch.h"
 #include "minsketchtests.h"
 #include "tests.h"
 
-#define NEW(x,y) minsketch *m = minsketch_new(x,y); ASSERT(m != NULL);
+#define CREATE(x,y) minsketch *m = minsketch_new(x,y); ASSERT(m != NULL);
+#define FINISH(...) PRINT(__VA_ARGS__); minsketch_free(m); return true;
+
 #define ADD(x) minsketch_add(m, x)
 #define GET(x) minsketch_get(m, x)
 
 static bool minsketch_test1() {
-	NEW(100, 100);
+	CREATE(100, 100);
 
 	ASSERT(GET("A") == 0);
 	ASSERT(GET("AB") == 0);
@@ -26,12 +29,11 @@ static bool minsketch_test1() {
 	ASSERT(GET("ACB") == 0);
 	ASSERT(GET("ABCD") == 0);
 
-
-	return true;
+	FINISH("passed minsketch_test1");
 }
 
 static bool minsketch_test2() {
-	NEW(2, 2);
+	CREATE(2, 2);
 
 	ASSERT(GET("A") == 0);
 	ASSERT(GET("AB") == 0);
@@ -56,7 +58,7 @@ static bool minsketch_test2() {
 	ASSERT((count += GET("ABCDEF")) >= 1);
 	ASSERT(count > 6);
 
-	return true;
+	FINISH("passed minsketch_test2");
 }
 
 bool minsketch_test() {

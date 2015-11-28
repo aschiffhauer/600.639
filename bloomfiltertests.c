@@ -1,15 +1,18 @@
+#include <stdbool.h>
 #include <stdio.h>
 
 #include "bloomfilter.h"
 #include "bloomfiltertests.h"
 #include "tests.h"
 
-#define NEW(x,y) bloomfilter *b = bloomfilter_new(x,y); ASSERT(b != NULL);
+#define CREATE(x,y) bloomfilter *b = bloomfilter_new(x,y); ASSERT(b != NULL);
+#define FINISH(...) PRINT(__VA_ARGS__); bloomfilter_free(b); return true;
+
 #define ADD(x) bloomfilter_add(b, x)
 #define GET(x) bloomfilter_get(b, x)
 
 static bool bloomfilter_test1() {
-	NEW(100, 100);
+	CREATE(100, 100);
 
 	ASSERT(GET("A") == false);
 	ASSERT(GET("AB") == false);
@@ -25,12 +28,12 @@ static bool bloomfilter_test1() {
 	
 	ASSERT(GET("ACB") == false);
 	ASSERT(GET("ABCD") == false);
-
-	return true;
+	
+	FINISH("passed bloomfilter_test1");
 }
 
 static bool bloomfilter_test2() {
-	NEW(2, 2);
+	CREATE(2, 2);
 
 	ASSERT(GET("A") == false);
 	ASSERT(GET("AB") == false);
@@ -53,7 +56,7 @@ static bool bloomfilter_test2() {
 	ASSERT(GET("ABCDE") == true);
 	ASSERT(GET("ABCDEF") == true);
 
-	return true;
+	FINISH("passed bloomfilter_test2");
 }
 
 bool bloomfilter_test() {
