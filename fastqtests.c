@@ -3,6 +3,7 @@
 
 #include "fastq.h"
 #include "fastqtests.h"
+#include "minsketch.h"
 #include "tests.h"
 
 #define CREATE(x) fastq *f = fastq_new("reads.fastq"); ASSERT(f != NULL);
@@ -21,8 +22,19 @@ static bool fastq_test1() {
 	FINISH("passed fastq_test1");
 }
 
+static bool fastq_test2() {
+	minsketch *m = minsketch_new(2000, 2000);
+	CREATE("reads.fastq");
+	while (READ) {
+		minsketch_add(m, SEQUENCE);
+	}
+	minsketch_free(m);
+	FINISH("passed fastq_test2");
+}
+
 bool fastq_test() {
 	ASSERT(fastq_test1() == true);
+	ASSERT(fastq_test2() == true);
 	PRINT("fastq tests passed");
 	return true;
 }
