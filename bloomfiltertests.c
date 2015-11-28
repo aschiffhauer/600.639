@@ -11,17 +11,20 @@
 static bool bloomfilter_test1() {
 	NEW(100, 100);
 
-	ASSERT(GET("A") == 0);
-	ASSERT(GET("AB") == 0);
-	ASSERT(GET("ABC") == 0);
+	ASSERT(GET("A") == false);
+	ASSERT(GET("AB") == false);
+	ASSERT(GET("ABC") == false);
 
 	ASSERT(ADD("A") == true);
 	ASSERT(ADD("AB") == true);
 	ASSERT(ADD("ABC") == true);
 
-	ASSERT(GET("A") == 1);
-	ASSERT(GET("AB") == 1);
-	ASSERT(GET("ABC") == 1);
+	ASSERT(GET("A") == true);
+	ASSERT(GET("AB") == true);
+	ASSERT(GET("ABC") == true);
+	
+	ASSERT(GET("ACB") == false);
+	ASSERT(GET("ABCD") == false);
 
 	return true;
 }
@@ -29,12 +32,12 @@ static bool bloomfilter_test1() {
 static bool bloomfilter_test2() {
 	NEW(2, 2);
 
-	ASSERT(GET("A") == 0);
-	ASSERT(GET("AB") == 0);
-	ASSERT(GET("ABC") == 0);
-	ASSERT(GET("ABCD") == 0);
-	ASSERT(GET("ABCDE") == 0);
-	ASSERT(GET("ABCDEF") == 0);
+	ASSERT(GET("A") == false);
+	ASSERT(GET("AB") == false);
+	ASSERT(GET("ABC") == false);
+	ASSERT(GET("ABCD") == false);
+	ASSERT(GET("ABCDE") == false);
+	ASSERT(GET("ABCDEF") == false);
 
 	ASSERT(ADD("A") == true);
 	ASSERT(ADD("AB") == true);
@@ -43,14 +46,12 @@ static bool bloomfilter_test2() {
 	ASSERT(ADD("ABCDE") == true);
 	ASSERT(ADD("ABCDEF") == true);
 
-	int count = 0;
-	ASSERT((count += GET("A")) == 1);
-	ASSERT((count += GET("AB")) == 1);
-	ASSERT((count += GET("ABC")) == 1);
-	ASSERT((count += GET("ABCD")) == 1);
-	ASSERT((count += GET("ABCDE")) == 1);
-	ASSERT((count += GET("ABCDEF")) == 1);
-	ASSERT(count == 6);
+	ASSERT(GET("A") == true);
+	ASSERT(GET("AB") == true);
+	ASSERT(GET("ABC") == true);
+	ASSERT(GET("ABCD") == true);
+	ASSERT(GET("ABCDE") == true);
+	ASSERT(GET("ABCDEF") == true);
 
 	return true;
 }

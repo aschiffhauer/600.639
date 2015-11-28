@@ -20,10 +20,10 @@ bloomfilter *bloomfilter_new(int m, int k) {
 }
 
 bool bloomfilter_add(bloomfilter *b, const char *str) {
-	for (int i = 0; i < b->len; i++) {
-		int val = hash(str, i);
-		int index = val / sizeof(int);
-		int offset = val % index;
+	for (int i = 0; i < b->k; i++) {
+		int bit = hash(str, i) % (b->len * sizeof(int));
+		int index = bit / sizeof(int);
+		int offset = bit % sizeof(int);
 		b->bits[index] = b->bits[index] | (1 << offset);
 	}
 	return true;
@@ -31,9 +31,9 @@ bool bloomfilter_add(bloomfilter *b, const char *str) {
 
 bool bloomfilter_get(bloomfilter *b, const char *str) {
 	for (int i = 0; i < b->len; i++) {
-		int val = hash(str, i);
-		int index = val / sizeof(int);
-		int offset = val % index;
+		int bit = hash(str, i) % (b->len * sizeof(int));
+		int index = bit / sizeof(int);
+		int offset = bit % sizeof(int);
 		if (!(b->bits[index] & (1 << offset))) {
 			return false;
 		}

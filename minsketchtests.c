@@ -22,6 +22,10 @@ static bool minsketch_test1() {
 	ASSERT(GET("A") >= 1);
 	ASSERT(GET("AB") >= 1);
 	ASSERT(GET("ABC") >= 1);
+	
+	ASSERT(GET("ACB") == 0);
+	ASSERT(GET("ABCD") == 0);
+
 
 	return true;
 }
