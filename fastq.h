@@ -10,7 +10,7 @@
 typedef struct {
 	FILE *file;
 	char* sequence;
-	int* qualities;
+	char* qualities;
 } fastq;
 
 fastq *fastq_new(const char *path);

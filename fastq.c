@@ -18,7 +18,7 @@ fastq *fastq_new(const char *path) {
 		free(f);
 		return NULL;
 	}
-	if ((f->qualities = malloc((BUFFER_LENGTH) * sizeof(int))) == NULL) {
+	if ((f->qualities = malloc((BUFFER_LENGTH) * sizeof(char))) == NULL) {
 		fclose(f->file);
 		free(f->sequence);
 		free(f);
