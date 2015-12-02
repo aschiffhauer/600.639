@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "errortests.h"
 #include "fastq.h"
@@ -10,7 +11,7 @@
 #include "minsketch.h"
 #include "tests.h"
 
-#define KMER_SIZE 10
+#define KMER_SIZE 5
 #define FASTQ_FILE "reads.fastq"
 
 #define USING(x,y,z) histogram *h = histogram_new(x, y); ASSERT(h != NULL); z; histogram_free(h);
@@ -21,18 +22,30 @@
 TEST(error_test1(), {
 	USING(MINSKETCH, minsketch_new(100, 100), {
 		READ();
-		int min = ~0U >> 1;
-		char min_kmer[KMER_SIZE + 1];
+		int n = 0;
+		float mean = 0.0;
+		FOR_EACH(kmer, {
+			n++;
+			mean += COUNT(kmer);
+		});
+		mean /= (float)n;
+		float variance = 0.0f;
+		FOR_EACH(kmer, {
+			variance += powf(COUNT(kmer) - mean, 2);
+		});
+		variance /= n - 1;
+		float stddev = sqrtf(variance);
+		int outliers = 0;
 		FOR_EACH(kmer, {
 			int count = COUNT(kmer);
-			if (count < min) {
-				PRINT("%s", kmer);
-				min = count;
-				strcpy(min_kmer, kmer);
+			if (count < mean - 2 * stddev || count > mean + 2 * stddev) {
+				outliers++;
 			}
 		});
-		PRINT("BAAGTTGAGT: %d", COUNT("BAAGTTGAGT"));
-		PRINT("%s: %d", min_kmer, min);
+		PRINT("len: %d", n);
+		PRINT("mean: %f", mean);
+		PRINT("stddev: %f", stddev);
+		PRINT("number of outliers: %d (%f%%)", outliers, outliers/(float)(n));
 	});
 })
 
