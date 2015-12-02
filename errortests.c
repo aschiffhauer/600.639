@@ -47,7 +47,7 @@ TEST(error_test1(), {
 			PRINT("len: %d", n);
 			PRINT("mean: %f", mean);
 			PRINT("stddev: %f", stddev);
-			PRINT("number of outliers: %d (%f%%)", outliers, outliers/(float)(n));
+			PRINT("outliers: %d (%f%%)", outliers, 100*outliers/(float)(n));
 		#endif PRINT_DEBUG_INFO
 	});
 })
