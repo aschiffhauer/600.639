@@ -4,6 +4,7 @@
 #include "fastq.h"
 #include "fastqtests.h"
 #include "minsketch.h"
+#include "bloomfilter.h"
 #include "tests.h"
 
 #define CREATE(x) fastq *f = fastq_new("reads.fastq"); ASSERT(f != NULL);
@@ -23,7 +24,7 @@ static bool fastq_test1() {
 }
 
 static bool fastq_test2() {
-	minsketch *m = minsketch_new(2000, 2000);
+	minsketch *m = minsketch_new(100, 100);
 	CREATE("reads.fastq");
 	while (READ) {
 		minsketch_add(m, SEQUENCE);
@@ -32,9 +33,20 @@ static bool fastq_test2() {
 	FINISH("passed fastq_test2");
 }
 
+static bool fastq_test3() {
+	bloomfilter *b = bloomfilter_new(100, 100);
+	CREATE("reads.fastq");
+	while (READ) {
+		bloomfilter_add(b, SEQUENCE);
+	}
+	bloomfilter_free(b);
+	FINISH("passed fastq_test3");
+}
+
 bool fastq_test() {
 	ASSERT(fastq_test1() == true);
 	ASSERT(fastq_test2() == true);
+	ASSERT(fastq_test3() == true);
 	PRINT("fastq tests passed");
 	return true;
 }
