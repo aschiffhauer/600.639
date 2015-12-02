@@ -4,6 +4,8 @@ CFLAGS = -std=c99 -Wall -Wextra
 HEADERS = \
 	bloomfilter.h \
 	bloomfiltertests.h \
+	error.h \
+	errortests.h \
 	fastq.h \
 	fastqtests.h \
 	hash.h \
@@ -16,6 +18,8 @@ HEADERS = \
 OBJECTS = \
 	bloomfilter.o \
 	bloomfiltertests.o \
+	error.o \
+	errortests.o \
 	fastq.o \
 	fastqtests.o \
 	hash.o \
