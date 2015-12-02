@@ -14,8 +14,8 @@ typedef struct {
 } histogram;
 
 histogram *histogram_new(counter type, void *data);
-bool histogram_add(histogram *h, const char *path, int k);
-int histogram_get(histogram *h, const char *kmer);
+bool histogram_read(histogram *h, const char *path, int k);
+int histogram_count(histogram *h, const char *kmer);
 void histogram_free(histogram *h);
 
 #endif

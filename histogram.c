@@ -20,7 +20,7 @@ histogram *histogram_new(counter type, void *data) {
 	return h;
 }
 
-bool histogram_add(histogram *h, const char *path, int k) {
+bool histogram_read(histogram *h, const char *path, int k) {
 	bool (*add) (void *, const char *);
 	switch(h->type) {
 		case BLOOMFILTER:
@@ -38,7 +38,7 @@ bool histogram_add(histogram *h, const char *path, int k) {
 	return true;
 }
 
-int histogram_get(histogram *h, const char *kmer) {
+int histogram_count(histogram *h, const char *kmer) {
 	int (*get) (void *, const char *);
 	switch(h->type) {
 		case BLOOMFILTER:

@@ -4,6 +4,8 @@
 
 #include "fastq.h"
 
+static char *string_strip(char * string);
+
 fastq *fastq_new(const char *path) {
 	fastq *f = malloc(sizeof *f);
 	if (f == NULL) {
@@ -35,10 +37,16 @@ bool fastq_read_line(fastq *f) {
 	if (fgets(f->sequence, BUFFER_LENGTH, f->file) == NULL) {
 		return false;
 	}
+	if (string_strip(f->sequence) == NULL) {
+		return false;
+	}
 	if (fgets(temp, BUFFER_LENGTH, f->file) == NULL) {
 		return false;
 	}
 	if (fgets(f->qualities, BUFFER_LENGTH, f->file) == NULL) {
+		return false;
+	}
+	if (string_strip(f->qualities) == NULL) {
 		return false;
 	}
 	return true;
@@ -49,4 +57,12 @@ void fastq_free(fastq* f) {
 	free(f->sequence);
 	free(f->qualities);
 	free(f);
+}
+
+static char *string_strip(char *str) {
+	int i = strlen(str) - 1;
+	if ((i > 0) && (str[i] == '\n')) {
+		str[i] = '\0';
+	}
+	return str;
 }
