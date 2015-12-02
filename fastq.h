@@ -9,8 +9,8 @@
 
 typedef struct {
 	FILE *file;
-	char* sequence;
-	char* qualities;
+	char *sequence;
+	char *qualities;
 } fastq;
 
 fastq *fastq_new(const char *path);

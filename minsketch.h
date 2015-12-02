@@ -6,7 +6,7 @@
 typedef struct {
 	int w;
 	int d;
-	int** rows;
+	int **rows;
 } minsketch;
 
 minsketch* minsketch_new(int w, int d);

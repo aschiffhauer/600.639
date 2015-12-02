@@ -7,6 +7,8 @@ HEADERS = \
 	fastq.h \
 	fastqtests.h \
 	hash.h \
+	histogram.h \
+	histogramtests.h \
 	minsketch.h \
 	minsketchtests.h \
 	tests.h \
@@ -17,6 +19,8 @@ OBJECTS = \
 	fastq.o \
 	fastqtests.o \
 	hash.o \
+	histogram.o \
+	histogramtests.o \
 	minsketch.o \
 	minsketchtests.o \
 	main.o \
