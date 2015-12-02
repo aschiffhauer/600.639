@@ -13,6 +13,7 @@
 
 #define KMER_SIZE 5
 #define FASTQ_FILE "reads.fastq"
+#define PRINT_DEBUG_INFO false
 
 #define USING(x,y,z) histogram *h = histogram_new(x, y); ASSERT(h != NULL); z; histogram_free(h);
 #define READ(...) histogram_read(h, FASTQ_FILE, KMER_SIZE)
@@ -42,10 +43,12 @@ TEST(error_test1(), {
 				outliers++;
 			}
 		});
-		PRINT("len: %d", n);
-		PRINT("mean: %f", mean);
-		PRINT("stddev: %f", stddev);
-		PRINT("number of outliers: %d (%f%%)", outliers, outliers/(float)(n));
+		#if PRINT_DEBUG_INFO
+			PRINT("len: %d", n);
+			PRINT("mean: %f", mean);
+			PRINT("stddev: %f", stddev);
+			PRINT("number of outliers: %d (%f%%)", outliers, outliers/(float)(n));
+		#endif PRINT_DEBUG_INFO
 	});
 })
 
