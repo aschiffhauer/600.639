@@ -25,33 +25,16 @@ bool histogram_add(histogram *h, const char *path, int k) {
 	switch(h->type) {
 		case BLOOMFILTER:
 			add = (bool (*)(void *, const char *))bloomfilter_add;
-            break;
+			break;
 		case MINSKETCH:
 			add = (bool (*)(void *, const char *))minsketch_add;
-            break;
+			break;
 		default:
-			return NULL;
+			return false;
 	}
-	fastq* f = fastq_new(path);
-	if (f == NULL) {
-		return false;
-	}
-	char *kmer = malloc(k + 1);
-	if (kmer == NULL) {
-		fastq_free(f);
-		return false;
-	}
-	while (fastq_read_line(f)) {
-		for (int i = 0; i < BUFFER_LENGTH - k - 2; i++) {
-			strncpy(kmer, f->sequence + i, k);
-            kmer[k] = '\0';
-			if (add(h->data, kmer) == false) {
-				return false;
-			}
-		}
-	}
-	free(kmer);
-	fastq_free(f);
+	fastq_for_each_kmer(path, k, kmer, {
+		add(h->data, kmer);
+	});
 	return true;
 }
 
@@ -60,8 +43,10 @@ int histogram_get(histogram *h, const char *kmer) {
 	switch(h->type) {
 		case BLOOMFILTER:
 			get = (int (*)(void *, const char *))bloomfilter_get;
+			break;
 		case MINSKETCH:
 			get = (int (*)(void *, const char *))minsketch_get;
+			break;
 		default:
 			return 0;
 	}
