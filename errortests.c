@@ -11,9 +11,9 @@
 #include "minsketch.h"
 #include "tests.h"
 
-#define KMER_SIZE 6
+#define KMER_SIZE 10
 #define FASTQ_FILE "reads.fastq"
-#define PRINT_DEBUG_INFO false
+#define PRINT_DEBUG_INFO true
 
 #define USING(x,y,z) histogram *h = histogram_new(x, y); ASSERT(h != NULL); z; histogram_free(h);
 #define READ(...) histogram_read(h, FASTQ_FILE, KMER_SIZE)
