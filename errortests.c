@@ -11,7 +11,7 @@
 #include "minsketch.h"
 #include "tests.h"
 
-#define KMER_SIZE 5
+#define KMER_SIZE 6
 #define FASTQ_FILE "reads.fastq"
 #define PRINT_DEBUG_INFO false
 
@@ -21,7 +21,7 @@
 #define FOR_EACH(x, y) fastq_for_each_kmer(FASTQ_FILE, KMER_SIZE, x, y);
 
 TEST(error_test1(), {
-	USING(MINSKETCH, minsketch_new(100, 100), {
+	USING(MINSKETCH, minsketch_new(1000, 1000), {
 		READ();
 		int n = 0;
 		float mean = 0.0;
@@ -39,8 +39,11 @@ TEST(error_test1(), {
 		int outliers = 0;
 		FOR_EACH(kmer, {
 			int count = COUNT(kmer);
-			if (count < mean - 2 * stddev || count > mean + 2 * stddev) {
+			if (count < mean - 2 * stddev) {
 				outliers++;
+				#if PRINT_DEBUG_INFO
+					PRINT("%s: %d", kmer, count);
+				#endif
 			}
 		});
 		#if PRINT_DEBUG_INFO
@@ -48,7 +51,7 @@ TEST(error_test1(), {
 			PRINT("mean: %f", mean);
 			PRINT("stddev: %f", stddev);
 			PRINT("outliers: %d (%f%%)", outliers, 100*outliers/(float)(n));
-		#endif PRINT_DEBUG_INFO
+		#endif
 	});
 })
 

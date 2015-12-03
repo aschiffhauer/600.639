@@ -15,6 +15,7 @@ typedef struct {
 	char *qualities;
 } fastq;
 
+fastq *fastq_generate(const char *path, int n);
 fastq *fastq_new(const char *path);
 bool fastq_read_line(fastq *f); 
 void fastq_free(fastq* f);

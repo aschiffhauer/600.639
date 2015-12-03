@@ -9,7 +9,7 @@
 #include "minsketch.h"
 #include "tests.h"
 
-#define KMER_SIZE 50
+#define KMER_SIZE 6
 #define FASTQ_FILE "reads.fastq"
 
 #define USING(x,y,z) histogram *h = histogram_new(x, y); ASSERT(h != NULL); z; histogram_free(h);

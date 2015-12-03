@@ -17,6 +17,12 @@
 #define QUALITIES f->qualities
 
 TEST(fastq_test1(), {
+	fastq *f = fastq_generate("reads.fastq", 100);
+	ASSERT(f != NULL);
+	fastq_free(f);
+})
+
+TEST(fastq_test2(), {
 	USING(FASTQ_FILE, {
 		while (READ) {
 			ASSERT(SEQUENCE[0] != '\0');
@@ -25,7 +31,7 @@ TEST(fastq_test1(), {
 	});
 })
 
-TEST(fastq_test2(), {
+TEST(fastq_test3(), {
 	minsketch *m = minsketch_new(100, 100);
 	ASSERT(m != NULL);
 	USING(FASTQ_FILE, {
@@ -37,7 +43,7 @@ TEST(fastq_test2(), {
 	minsketch_free(m);
 })
 
-TEST(fastq_test3(), {
+TEST(fastq_test4(), {
 	bloomfilter *b = bloomfilter_new(100, 100);
 	ASSERT(b != NULL);
 	USING(FASTQ_FILE, {
@@ -49,7 +55,7 @@ TEST(fastq_test3(), {
 	bloomfilter_free(b);
 })
 
-TEST(fastq_test4(), {
+TEST(fastq_test5(), {
 	bool entered = false;
 	FOR_EACH(kmer, {
 		entered = true;
@@ -62,4 +68,5 @@ TEST(fastq_test(), {
 	ASSERT(fastq_test2() == true);
 	ASSERT(fastq_test3() == true);
 	ASSERT(fastq_test4() == true);
+	ASSERT(fastq_test5() == true);
 })

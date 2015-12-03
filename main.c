@@ -7,9 +7,9 @@
 #include "errortests.h"
 
 int main (void) {
+	fastq_test();
 	bloomfilter_test();
 	minsketch_test();
-	fastq_test();
 	histogram_test();
 	error_test();
 }

@@ -1,10 +1,47 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <time.h>
 
+#include "tests.h"
 #include "fastq.h"
 
 static char *string_strip(char * string);
+
+fastq *fastq_generate(const char *path, int n) {
+	static char temp[MAX_READ_LENGTH + 1];
+	static char nucleotides[4] = { 'A', 'G', 'C', 'T' };
+	FILE *file = fopen(path, "w");
+	if (file == NULL) {
+		return NULL;
+	}
+
+	fastq *f = fastq_new(path);
+	if (f == NULL) {
+		return NULL;
+	}
+
+	fclose(f->file);
+	f->file = file;
+	
+	srand((unsigned int)time(NULL));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < MAX_READ_LENGTH; j++) {
+			temp[j] = nucleotides[rand() % 4];
+		}
+		temp[MAX_READ_LENGTH] = '\0';
+		fprintf(f->file, "%s\n", "IGNORE");
+		fprintf(f->file, "%s\n", temp);
+		fprintf(f->file, "%s\n", "IGNORE");
+		fprintf(f->file, "%s\n", "IGNORE");
+	}
+	fclose(f->file);
+	if ((f->file = fopen(path, "r")) == NULL) {
+		fastq_free(f);
+		return NULL;
+	}
+	return f;
+}
 
 fastq *fastq_new(const char *path) {
 	fastq *f = malloc(sizeof *f);
@@ -60,7 +97,7 @@ void fastq_free(fastq* f) {
 }
 
 static char *string_strip(char *str) {
-	int i = strlen(str) - 1;
+	unsigned long i = strlen(str) - 1;
 	if ((i > 0) && (str[i] == '\n')) {
 		str[i] = '\0';
 	}
