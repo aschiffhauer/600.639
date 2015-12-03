@@ -17,7 +17,7 @@
 #define QUALITIES f->qualities
 
 TEST(fastq_test1(), {
-	fastq *f = fastq_generate("reads.fastq", 20);
+	fastq *f = fastq_generate("reads.fastq", 100);
 	ASSERT(f != NULL);
 	fastq_free(f);
 })

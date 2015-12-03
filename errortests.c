@@ -13,8 +13,10 @@
 
 #define KMER_SIZE 10
 #define FASTQ_FILE "reads.fastq"
+
 #define DEBUG_STATS false
 #define DEBUG_KMERS false
+#define DEBUG_LIERS false
 #define DEBUG_FAKES false
 
 #define USING(x,y,z) histogram *h = histogram_new(x, y); ASSERT(h != NULL); z; histogram_free(h);
@@ -45,6 +47,9 @@ TEST(error_test1(), {
 				PRINT("%s: %d", kmer, count);
 			#endif
 			if (count <= ceil(mean - 2 * stddev)) {
+				#if DEBUG_LIERS && DEBUG_KMERS == false
+					PRINT("%s: %d", kmer, count);
+				#endif
 				outliers++;
 			}
 		});

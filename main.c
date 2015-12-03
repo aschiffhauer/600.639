@@ -6,7 +6,7 @@
 #include "histogramtests.h"
 #include "errortests.h"
 
-#define GENERATE_NEW_FASTQ_FILE true
+#define GENERATE_NEW_FASTQ_FILE false
 
 int main (void) {
 	fastq_test(GENERATE_NEW_FASTQ_FILE);
