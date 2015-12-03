@@ -28,7 +28,7 @@ void fastq_free(fastq* f);
 		} \
 		else { \
 			while (fastq_read_line(f)) { \
-				for (int i = 0; i < BUFFER_LENGTH - k - 2; i++) { \
+				for (int i = 0; i < MAX_READ_LENGTH - k; i++) { \
 					strncpy((x), f->sequence + i, k); \
 					(x)[k] = '\0'; \
 					z; \

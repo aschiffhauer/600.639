@@ -1008,9 +1008,9 @@ unsigned int hash(const char *str, int seed) {
 	if (!*str) {
 		return 0;
 	}
-	unsigned int hash = primes[seed % NELEM(primes)];
+	unsigned int hash = primes[(NELEM(primes)/2 + (seed * (strlen(str) + *str))) % NELEM(primes)];
 	while (*str++) {
-		hash += (hash << 5) + *(str - 1);
+		hash += (primes[hash % NELEM(primes)] + *(str - 1)) << (seed % 5);
 	}
 	return hash;
 }

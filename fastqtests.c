@@ -17,7 +17,7 @@
 #define QUALITIES f->qualities
 
 TEST(fastq_test1(), {
-	fastq *f = fastq_generate("reads.fastq", 100);
+	fastq *f = fastq_generate("reads.fastq", 20);
 	ASSERT(f != NULL);
 	fastq_free(f);
 })
@@ -63,8 +63,10 @@ TEST(fastq_test5(), {
 	ASSERT(entered == true);
 })
 
-TEST(fastq_test(), {
-	ASSERT(fastq_test1() == true);
+TEST(fastq_test(bool generate_new_fatsq_file), {
+	if (generate_new_fatsq_file) {
+		ASSERT(fastq_test1() == true);
+	}
 	ASSERT(fastq_test2() == true);
 	ASSERT(fastq_test3() == true);
 	ASSERT(fastq_test4() == true);

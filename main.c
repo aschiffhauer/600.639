@@ -6,8 +6,10 @@
 #include "histogramtests.h"
 #include "errortests.h"
 
+#define GENERATE_NEW_FASTQ_FILE true
+
 int main (void) {
-	fastq_test();
+	fastq_test(GENERATE_NEW_FASTQ_FILE);
 	bloomfilter_test();
 	minsketch_test();
 	histogram_test();
