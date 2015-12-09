@@ -7,6 +7,7 @@
 #include "bloomfilter.h"
 #include "tests.h"
 
+#define NREADS 100
 #define KMER_SIZE 10
 #define FASTQ_FILE "reads.fastq"
 #define USING(x, y) fastq *f = fastq_new(x); ASSERT(f != NULL); y; fastq_free(f);
@@ -17,7 +18,7 @@
 #define QUALITIES f->qualities
 
 TEST(fastq_test1(), {
-	fastq *f = fastq_generate("reads.fastq", 100);
+	fastq *f = fastq_generate("reads.fastq", NREADS);
 	ASSERT(f != NULL);
 	fastq_free(f);
 })

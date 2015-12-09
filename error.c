@@ -8,7 +8,7 @@
 bool error_detect(histogram *h, char *sequence, int k, int cutoff) {
 	bool error = false;
 	sequence_for_each_kmer(sequence, k, kmer, {
-		if (histogram_count(h, sequence) <= cutoff) {
+		if (histogram_count(h, kmer) <= cutoff) {
 			error = true;
 			break;
 		}

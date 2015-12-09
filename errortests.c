@@ -16,16 +16,19 @@
 #define KMER_SIZE 10
 #define FASTQ_FILE "reads.fastq"
 #define FAKE_KMER "ATATATATAT"
+#define WIDTH 100
+#define HEIGHT 1
 
 // error_test1 flags
-#define DEBUG_STATS false
+#define DEBUG_STATS true
 #define DEBUG_KMERS false
 #define DEBUG_LIERS false
 #define DEBUG_FAKES false
 #define DEBUG_FAKER false
 
 // error_test2 flags
-#define DEBUG_SEQS  false
+#define DEBUG_NSEQS true
+#define DEBUG_SEQS  true
 
 #define USING(x,y,z) histogram *h = histogram_new(x, y); ASSERT(h != NULL); z; histogram_free(h);
 #define READ(...) histogram_read(h, FASTQ_FILE, KMER_SIZE)
@@ -35,7 +38,7 @@
 #define ERROR_DETECT(sequence, cutoff) error_detect(h, sequence, KMER_SIZE, cutoff)
 
 TEST(error_test1(), {
-	USING(MINSKETCH, minsketch_new(9000, 1), {
+	USING(MINSKETCH, minsketch_new(WIDTH, HEIGHT), {
 		READ();
 		int n = 0;
 		float mean = 0.0;
@@ -86,16 +89,21 @@ TEST(error_test1(), {
 })
 
 TEST(error_test2(), {
-	USING(MINSKETCH, minsketch_new(9000, 1), {
+	USING(MINSKETCH, minsketch_new(WIDTH, HEIGHT), {
 		READ();
 		fastq *f = fastq_new(FASTQ_FILE); 
+		int n = 0;
 		while(fastq_read_line(f)) {
-			if (ERROR_DETECT(f->sequence, 1)) {
+			if (ERROR_DETECT(f->sequence, 64)) {
+				n++;
 				#if DEBUG_SEQS
 					PRINT("%s", f->sequence);
 				#endif
 			}
 		}
+		#if DEBUG_NSEQS
+			PRINT("errant sequences: %d", n);
+		#endif
 	});
 });
 
