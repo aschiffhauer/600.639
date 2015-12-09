@@ -13,45 +13,45 @@
 TEST(minsketch_test1(), {
 	USING(100, 100, {
 		ASSERT(GET("A") == 0);
-		ASSERT(GET("AB") == 0);
-		ASSERT(GET("ABC") == 0);
+		ASSERT(GET("AA") == 0);
+		ASSERT(GET("AAA") == 0);
 
 		ASSERT(ADD("A") == true);
-		ASSERT(ADD("AB") == true);
-		ASSERT(ADD("ABC") == true);
+		ASSERT(ADD("AA") == true);
+		ASSERT(ADD("AAA") == true);
 
 		ASSERT(GET("A") >= 1);
-		ASSERT(GET("AB") >= 1);
-		ASSERT(GET("ABC") >= 1);
+		ASSERT(GET("AA") >= 1);
+		ASSERT(GET("AAA") >= 1);
 		
-		ASSERT(GET("ACB") == 0);
-		ASSERT(GET("ABCD") == 0);
+		ASSERT(GET("AAAA") == 0);
+		ASSERT(GET("AAAAA") == 0);
 	});
 });
 
 TEST(minsketch_test2(), {
 	USING(2, 2, {
 		ASSERT(GET("A") == 0);
-		ASSERT(GET("AB") == 0);
-		ASSERT(GET("ABC") == 0);
-		ASSERT(GET("ABCD") == 0);
-		ASSERT(GET("ABCDE") == 0);
-		ASSERT(GET("ABCDEF") == 0);
+		ASSERT(GET("AA") == 0);
+		ASSERT(GET("AAA") == 0);
+		ASSERT(GET("AAAA") == 0);
+		ASSERT(GET("AAAAA") == 0);
+		ASSERT(GET("AAAAAA") == 0);
 
 		ASSERT(ADD("A") == true);
-		ASSERT(ADD("AB") == true);
-		ASSERT(ADD("ABC") == true);
-		ASSERT(ADD("ABCD") == true);
-		ASSERT(ADD("ABCDE") == true);
-		ASSERT(ADD("ABCDEF") == true);
+		ASSERT(ADD("AA") == true);
+		ASSERT(ADD("AAA") == true);
+		ASSERT(ADD("AAAA") == true);
+		ASSERT(ADD("AAAAA") == true);
+		ASSERT(ADD("AAAAAA") == true);
 
 		int count = 0;
 		ASSERT((count += GET("A")) >= 1);
-		ASSERT((count += GET("AB")) >= 1);
-		ASSERT((count += GET("ABC")) >= 1);
-		ASSERT((count += GET("ABCD")) >= 1);
-		ASSERT((count += GET("ABCDE")) >= 1);
-		ASSERT((count += GET("ABCDEF")) >= 1);
+		ASSERT((count += GET("AA")) >= 1);
+		ASSERT((count += GET("AAA")) >= 1);
+		ASSERT((count += GET("AAAA")) >= 1);
+		ASSERT((count += GET("AAAAA")) >= 1);
+		ASSERT((count += GET("AAAAAA")) >= 1);
 		ASSERT(count > 6);
 	});
 });

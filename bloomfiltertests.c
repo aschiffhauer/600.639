@@ -4,6 +4,7 @@
 #include "bloomfilter.h"
 #include "bloomfiltertests.h"
 #include "tests.h"
+#include "hash.h"
 
 #define USING(x,y,z) bloomfilter *b = bloomfilter_new(x,y); ASSERT(b != NULL); z; bloomfilter_free(b);
 
@@ -12,45 +13,42 @@
 
 TEST(bloomfilter_test1(), {
 	USING(100, 100, {
-		ASSERT(GET("A") == false);
-		ASSERT(GET("AA") == false);
-		ASSERT(GET("AAA") == false);
+		ASSERT(GET("AGTAGTAGTA") == false);
+		ASSERT(GET("TGATGATGAT") == false);
+		ASSERT(GET("GTAGTAGTAG") == false);
 
-		ASSERT(ADD("A") == true);
-		ASSERT(ADD("AA") == true);
-		ASSERT(ADD("AAA") == true);
+		ASSERT(ADD("AGTAGTAGTA") == true);
+		ASSERT(ADD("TGATGATGAT") == true);
+		ASSERT(ADD("GTAGTAGTAG") == true);
 
-		ASSERT(GET("A") == true);
-		ASSERT(GET("AA") == true);
-		ASSERT(GET("AAA") == true);
+		ASSERT(GET("AGTAGTAGTA") == true);
+		ASSERT(GET("TGATGATGAT") == true);
+		ASSERT(GET("GTAGTAGTAG") == true);
 		
-		ASSERT(GET("TTT") == false, PRINT("TTT = %d", GET("TTT")));
-		ASSERT(GET("TTTT") == false);
+		ASSERT(GET("CATCATCATC") == false, ERROR("    COUNT(CATCATCATC) = %d, h(CATCATCATC) = %llu", GET("CATCATCATC"), hash("CATCATCATC", 0)));
+		ASSERT(GET("TAGTAGTAGT") == false, ERROR("    COUNT(TAGTAGTAGT) = %d, h(TAGTAGTAGT) = %llu", GET("TAGTAGTAGT"), hash("TAGTAGTAGT", 0)));
 	});	
 })
 
 TEST(bloomfilter_test2(), {
 	USING(2, 2, {
-		ASSERT(GET("A") == false);
-		ASSERT(GET("AB") == false);
-		ASSERT(GET("ABC") == false);
-		ASSERT(GET("ABCD") == false);
-		ASSERT(GET("ABCDE") == false);
-		ASSERT(GET("ABCDEF") == false);
+		ASSERT(GET("AGTAGTAGTA") == false);
+		ASSERT(GET("TGATGATGAT") == false);
+		ASSERT(GET("GTAGTAGTAG") == false);
+		ASSERT(GET("CATCATCATC") == false);
+		ASSERT(GET("TAGTAGTAGT") == false);
 
-		ASSERT(ADD("A") == true);
-		ASSERT(ADD("AB") == true);
-		ASSERT(ADD("ABC") == true);
-		ASSERT(ADD("ABCD") == true);
-		ASSERT(ADD("ABCDE") == true);
-		ASSERT(ADD("ABCDEF") == true);
+		ASSERT(ADD("AGTAGTAGTA") == true);
+		ASSERT(ADD("TGATGATGAT") == true);
+		ASSERT(ADD("GTAGTAGTAG") == true);
+		ASSERT(ADD("CATCATCATC") == true);
+		ASSERT(ADD("TAGTAGTAGT") == true);
 
-		ASSERT(GET("A") == true);
-		ASSERT(GET("AB") == true);
-		ASSERT(GET("ABC") == true);
-		ASSERT(GET("ABCD") == true);
-		ASSERT(GET("ABCDE") == true);
-		ASSERT(GET("ABCDEF") == true);
+		ASSERT(GET("AGTAGTAGTA") == true);
+		ASSERT(GET("TGATGATGAT") == true);
+		ASSERT(GET("GTAGTAGTAG") == true);
+		ASSERT(GET("CATCATCATC") == true);
+		ASSERT(GET("TAGTAGTAGT") == true);
 	});
 })
 

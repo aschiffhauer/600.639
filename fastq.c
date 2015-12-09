@@ -30,9 +30,6 @@ fastq *fastq_generate(const char *path, int n) {
 			temp[j] = nucleotides[rand() % 4];
 		}
 		temp[MAX_READ_LENGTH] = '\0';
-		if (i == n - 1) {
-			memset(temp, 'A', 10);
-		}
 		fprintf(f->file, "%s\n", "IGNORE");
 		fprintf(f->file, "%s\n", temp);
 		fprintf(f->file, "%s\n", "IGNORE");
