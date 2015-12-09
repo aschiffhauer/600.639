@@ -5,7 +5,7 @@
 
 #include "histogram.h"
 
-bool error_detect(histogram *h, char *sequence);
-char *error_correct(histogram *h, char *sequence);
+bool error_detect(histogram *h, char *sequence, int k, int cutoff);
+char *error_correct(histogram *h, char *sequence, int k, int cutoff);
 
 #endif

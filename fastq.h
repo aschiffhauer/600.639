@@ -39,5 +39,16 @@ void fastq_free(fastq* f);
 		} \
 	} \
 }
+#define sequence_for_each_kmer(sequence, k, x, z) { \
+	char *(x) = malloc(k + 1); \
+	if (x != NULL) { \
+		for (int i = 0; i < MAX_READ_LENGTH - k; i++) { \
+			strncpy((x), sequence + i, k); \
+			(x)[k] = '\0'; \
+			z; \
+		} \
+		free(x); \
+	} \
+}
 
 #endif
