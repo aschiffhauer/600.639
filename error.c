@@ -18,6 +18,7 @@ char *error_correct(histogram *h, char *sequence, int k, int cutoff) {
 				start = position;
 			}
 			strcpy(kmers[position], kmer);
+			printf("position: %d, start: %d, end: %d\n", position, start, end);
 		}
 		else if (start >= 0) {
 			// Calculate position of errant nucleotide
