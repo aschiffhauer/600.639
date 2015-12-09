@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #define NELEM(x) (sizeof(x) / sizeof((x)[0]))
 

@@ -4,9 +4,9 @@
 #include "error.h"
 
 bool error_detect(histogram *h, char *sequence) {
-	return true;
+	return h && sequence;
 }
 
 char *error_correct(histogram *h, char *sequence) {
-	return NULL;
+	return (h && sequence) ? NULL : NULL;
 }
