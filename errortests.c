@@ -49,7 +49,6 @@ TEST(error_test1(), {
 			int count = COUNT(kmer);
 			#if DEBUG_KMERS
 				PRINT("%s: %d (count)", kmer, count);
-        PRINT("%s: %u (hash)", kmer, hash(kmer, 0)%100);
 			#endif
 			if (count <= ceil(mean - 2 * stddev)) {
 				#if DEBUG_LIERS && DEBUG_KMERS == false
@@ -63,7 +62,7 @@ TEST(error_test1(), {
 			PRINT("mean: %f", mean);
 			PRINT("stddev: %f", stddev);
 			PRINT("outliers: %d (%f%%)", outliers, 100*outliers/(float)(n));
-      PRINT("load factor: %f%%", LOAD_FACTOR());
+			PRINT("load factor: %f%%", LOAD_FACTOR());
 		#endif
 		#if DEBUG_FAKES
 			char temp[KMER_SIZE * 2 + 1];

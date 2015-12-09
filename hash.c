@@ -11,7 +11,7 @@ unsigned int hash(const char *str, unsigned int seed) {
 		return 0;
 	}
 	unsigned int hash = 0x1;
-  unsigned long n = strlen(str);
+	unsigned long n = strlen(str);
 	for (unsigned int i = 0; i < n; i++) {
 		hash <<= BITS_PER_CHAR;
 		switch (str[i]) {

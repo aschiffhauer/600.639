@@ -54,14 +54,14 @@ int histogram_count(histogram *h, const char *kmer) {
 }
 
 float histogram_load_factor(histogram *h) {
-    switch (h->type) {
-        case BLOOMFILTER:
-            return -1;
-        case MINSKETCH:
-            return minsketch_load_factor(h->data) * 100.0f;
-        default:
-            return -1;
-    }
+		switch (h->type) {
+				case BLOOMFILTER:
+						return -1;
+				case MINSKETCH:
+						return minsketch_load_factor(h->data) * 100.0f;
+				default:
+						return -1;
+		}
 }
 
 void histogram_free(histogram *h) {
