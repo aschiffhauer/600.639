@@ -1,37 +1,37 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+
+#include "hash.h"
 
 #define NELEM(x) (sizeof(x) / sizeof((x)[0]))
-#define A 0  // 00
-#define C 1  // 01
-#define G 2  // 10
-#define T 3  // 11
 
-unsigned long hash(const char *str, int seed) {
+unsigned long long hash(const char *str, int seed) {
 	if (!*str) {
 		return 0;
 	}
-	unsigned long hash = 0;
-	for (int i = 0; i < strlen(str); i++) {
-		hash <<= 2;
+	unsigned long long hash = seed;
+	for (int i = 0, n = strlen(str); i < n; i++) {
 		switch (str[i]) {
 			case 'A':
-				hash += A;
+				hash = (hash << 3) + A;
 				break;
 			case 'C':
-				hash += C;
+				hash = (hash << 3) + C;
 				break;
 			case 'G':
-				hash += G;
+				hash = (hash << 3) + G;
 				break;
 			case 'T':
-				hash += T;
+				hash = (hash << 3) + T;
 				break;
 			default:
 				hash += str[i];
 				break;
 		}
 	}
-	hash += seed;
+	if (strlen(str) < 5) {
+			//printf("h(%s): %llu\n", str, hash);
+	}
 	return hash;
 }

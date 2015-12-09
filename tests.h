@@ -7,7 +7,7 @@
 #define ERROR(...) { fprintf(stderr, __VA_ARGS__); fprintf(stderr, "\n"); }
 #define DEBUG { ERROR("%s: %s: %d", __FILE__, __FUNCTION__, __LINE__); }
 #define PANIC(...) { ERROR(__VA_ARGS__); DEBUG; for(;;) { ; } ; }
-#define ASSERT(x) { if (!(x)) { DEBUG; ERROR("    fail: %s", #x); return false; } }
+#define ASSERT(x, ...) { if (!(x)) { __VA_ARGS__; DEBUG; ERROR("    fail: %s", #x); return false; } }
 #define TEST(x, y) bool x { y; PRINT("%s passed", #x); return true; }
 #define lambda(t, f) ({ t _f_ f; _f_; })
 

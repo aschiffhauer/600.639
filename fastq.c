@@ -31,7 +31,7 @@ fastq *fastq_generate(const char *path, int n) {
 		}
 		temp[MAX_READ_LENGTH] = '\0';
 		if (i == n - 1) {
-			temp[0] = 'Z';
+			memset(temp, 'A', 10);
 		}
 		fprintf(f->file, "%s\n", "IGNORE");
 		fprintf(f->file, "%s\n", temp);

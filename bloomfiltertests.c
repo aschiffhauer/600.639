@@ -13,19 +13,19 @@
 TEST(bloomfilter_test1(), {
 	USING(100, 100, {
 		ASSERT(GET("A") == false);
-		ASSERT(GET("AB") == false);
-		ASSERT(GET("ABC") == false);
+		ASSERT(GET("AA") == false);
+		ASSERT(GET("AAA") == false);
 
 		ASSERT(ADD("A") == true);
-		ASSERT(ADD("AB") == true);
-		ASSERT(ADD("ABC") == true);
+		ASSERT(ADD("AA") == true);
+		ASSERT(ADD("AAA") == true);
 
 		ASSERT(GET("A") == true);
-		ASSERT(GET("AB") == true);
-		ASSERT(GET("ABC") == true);
+		ASSERT(GET("AA") == true);
+		ASSERT(GET("AAA") == true);
 		
-		ASSERT(GET("ACB") == false);
-		ASSERT(GET("ABCD") == false);
+		ASSERT(GET("TTT") == false, PRINT("TTT = %d", GET("TTT")));
+		ASSERT(GET("TTTT") == false);
 	});	
 })
 
