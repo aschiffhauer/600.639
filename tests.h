@@ -9,6 +9,5 @@
 #define PANIC(...) { ERROR(__VA_ARGS__); DEBUG; for(;;) { ; } ; }
 #define ASSERT(x, ...) { if (!(x)) {DEBUG; ERROR("    fail: %s", #x); __VA_ARGS__; return false; } }
 #define TEST(x, y) bool x { y; PRINT("%s passed", #x); return true; }
-#define lambda(t, f) ({ t _f_ f; _f_; })
 
 #endif
