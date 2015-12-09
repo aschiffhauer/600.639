@@ -13,11 +13,13 @@
 
 #define KMER_SIZE 10
 #define FASTQ_FILE "reads.fastq"
+#define FAKE_KMER "ZAGCCCCAAA"
 
-#define DEBUG_STATS false
+#define DEBUG_STATS true
 #define DEBUG_KMERS false
 #define DEBUG_LIERS false
 #define DEBUG_FAKES false
+#define DEBUG_FAKER true
 
 #define USING(x,y,z) histogram *h = histogram_new(x, y); ASSERT(h != NULL); z; histogram_free(h);
 #define READ(...) histogram_read(h, FASTQ_FILE, KMER_SIZE)
@@ -25,7 +27,7 @@
 #define FOR_EACH(x, y) fastq_for_each_kmer(FASTQ_FILE, KMER_SIZE, x, y);
 
 TEST(error_test1(), {
-	USING(MINSKETCH, minsketch_new(100, 100), {
+	USING(MINSKETCH, minsketch_new(150, 150), {
 		READ();
 		int n = 0;
 		float mean = 0.0;
@@ -67,6 +69,9 @@ TEST(error_test1(), {
 				temp[i] = 'A' + i;
 				PRINT("  %s: %d", temp, COUNT(temp));
 			}
+		#endif
+		#if DEBUG_FAKER
+			PRINT("%s: %d", FAKE_KMER, COUNT(FAKE_KMER));
 		#endif
 	});
 })
