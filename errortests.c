@@ -35,7 +35,7 @@
 #define COUNT(x) histogram_count(h, x)
 #define FOR_EACH_KMER(x, y) fastq_for_each_kmer(FASTQ_FILE, KMER_SIZE, x, y);
 #define LOAD_FACTOR(...) histogram_load_factor(h)
-#define ERROR_DETECT(sequence, cutoff) error_detect(h, sequence, KMER_SIZE, cutoff)
+#define ERROR_CORRECT(sequence, cutoff) error_correct(h, sequence, KMER_SIZE, cutoff)
 
 TEST(error_test1(), {
 	USING(MINSKETCH, minsketch_new(WIDTH, HEIGHT), {
@@ -90,14 +90,16 @@ TEST(error_test1(), {
 
 TEST(error_test2(), {
 	USING(MINSKETCH, minsketch_new(WIDTH, HEIGHT), {
+		char previous[MAX_READ_LENGTH + 1];
 		READ();
 		fastq *f = fastq_new(FASTQ_FILE); 
 		int n = 0;
 		while(fastq_read_line(f)) {
-			if (ERROR_DETECT(f->sequence, 64)) {
+			strcpy(previous, f->sequence);
+			if (ERROR_CORRECT(f->sequence, 10)) {
 				n++;
 				#if DEBUG_SEQS
-					PRINT("%s", f->sequence);
+					PRINT("corrected: %s -> %s", previous, f->sequence);
 				#endif
 			}
 		}
