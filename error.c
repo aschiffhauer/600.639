@@ -5,56 +5,48 @@
 #include "fastq.h"
 #include "histogram.h"
 
+static void error_correct_sequence(histogram *h, char *kmer, int position, int *max_count, char *max_nucleotide, char nucleotide) {
+	char kmer_copy[MAX_READ_LENGTH + 1];
+	strcpy(kmer_copy, kmer);
+	kmer_copy[position] = nucleotide;
+	int count = histogram_count(h, kmer_copy);
+	if (count > *max_count) {
+		*max_count = count;
+		*max_nucleotide = nucleotide;
+		kmer[position] = nucleotide;
+	}
+}
+
 char *error_correct(histogram *h, char *sequence, int k, int cutoff) {
-	char errant_kmer[MAX_READ_LENGTH + 1];
-	int start = -1;
+	int kmer_offset = -1;
 	int position = 0;
 	sequence_for_each_kmer(sequence, k, kmer, {
 		if (histogram_count(h, kmer) <= cutoff) {
-			if (start == -1) {
-				start = position;
+			if (kmer_offset == -1) {
+				kmer_offset = position;
 			}
-			strcpy(errant_kmer, kmer);
 		}
-		else if (start >= 0) {
+		else if (kmer_offset >= 0) {
 			break;
 		}
 		position++;
 	});
-	if (start >= 0) {
-		// Calculate position of errant nucleotide
-		int end = position;
-		printf("position: %d, start: %d, end: %d\n", position, start, end);
-		int errant_position = end - 1;
-		int max_count = ~0;
-		int count = 0;
-		char max_nucleotide = '\0';
-		// Check count with A
-		errant_kmer[errant_position] = 'A';
-		if ((count = histogram_count(h, errant_kmer)) > max_count) {
-			max_count = count;
-			max_nucleotide = 'A';
+	if (kmer_offset >= 0) {
+		if (position - 1 >= MAX_READ_LENGTH - k) {
+			printf("warning: the last kmer has an errant nucleotide...we can't fix that just yet\n");
 		}
-		// Check count with C
-		errant_kmer[errant_position] = 'C';
-		if ((count = histogram_count(h, errant_kmer)) > max_count) {
-			max_count = count;
-			max_nucleotide = 'C';
-		}
-		// Check count with G
-		errant_kmer[errant_position] = 'G';
-		if ((count = histogram_count(h, errant_kmer)) > max_count) {
-			max_count = count;
-			max_nucleotide = 'G';
-		}
-		// Check count with T
-		errant_kmer[errant_position] = 'T';
-		if ((count = histogram_count(h, errant_kmer)) > max_count) {
-			max_count = count;
-			max_nucleotide = 'T';
-		}
-		sequence[end - 1] = max_nucleotide;
-		errant_kmer[errant_position] = max_nucleotide;
+		char kmer[MAX_READ_LENGTH + 1];
+		memcpy(kmer, &sequence[kmer_offset], k);
+		kmer[k] = '\0';
+
+		int count = ~0;
+		char nucleotide = '\0';
+		error_correct_sequence(h, kmer, 0, &count, &nucleotide, 'A');
+		error_correct_sequence(h, kmer, 0, &count, &nucleotide, 'C');
+		error_correct_sequence(h, kmer, 0, &count, &nucleotide, 'G');
+		error_correct_sequence(h, kmer, 0, &count, &nucleotide, 'T');
+
+		sequence[position - 1] = kmer[0];
 		return sequence;
 	}
 	return NULL;
