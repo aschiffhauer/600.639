@@ -19,6 +19,7 @@ typedef struct {
 	int *bits;
 	int k;
 	int len;
+	unsigned int *hashes;
 } bloomfilter;
 
 bloomfilter *bloomfilter_new(int m, int k);

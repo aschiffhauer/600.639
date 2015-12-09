@@ -25,8 +25,8 @@ TEST(bloomfilter_test1(), {
 		ASSERT(GET("TGATGATGAT") == true);
 		ASSERT(GET("GTAGTAGTAG") == true);
 		
-		ASSERT(GET("CATCATCATC") == false, ERROR("    COUNT(CATCATCATC) = %d, h(CATCATCATC) = %llu", GET("CATCATCATC"), hash("CATCATCATC", 0)));
-		ASSERT(GET("TAGTAGTAGT") == false, ERROR("    COUNT(TAGTAGTAGT) = %d, h(TAGTAGTAGT) = %llu", GET("TAGTAGTAGT"), hash("TAGTAGTAGT", 0)));
+		ASSERT(GET("CATCATCATC") == false);
+		ASSERT(GET("TAGTAGTAGT") == false);
 	});	
 })
 

@@ -6,12 +6,13 @@
 
 #define NELEM(x) (sizeof(x) / sizeof((x)[0]))
 
-unsigned long long hash(const char *str, int seed) {
+unsigned int hash(const char *str, unsigned int seed) {
 	if (!*str) {
 		return 0;
 	}
-	unsigned long long hash = 0x1;
-	for (int i = 0, n = strlen(str); i < n; i++) {
+	unsigned int hash = 0x1;
+  unsigned long n = strlen(str);
+	for (unsigned int i = 0; i < n; i++) {
 		hash <<= BITS_PER_CHAR;
 		switch (str[i]) {
 			case 'A':
@@ -31,5 +32,5 @@ unsigned long long hash(const char *str, int seed) {
 				break;
 		}
 	}
-	return hash;
+	return hash % seed;
 }

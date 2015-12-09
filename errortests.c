@@ -10,24 +10,26 @@
 #include "bloomfilter.h"
 #include "minsketch.h"
 #include "tests.h"
+#include "hash.h"
 
 #define KMER_SIZE 10
 #define FASTQ_FILE "reads.fastq"
 #define FAKE_KMER "ATATATATAT"
 
-#define DEBUG_STATS false
+#define DEBUG_STATS true
 #define DEBUG_KMERS false
 #define DEBUG_LIERS false
 #define DEBUG_FAKES false
-#define DEBUG_FAKER false
+#define DEBUG_FAKER true
 
 #define USING(x,y,z) histogram *h = histogram_new(x, y); ASSERT(h != NULL); z; histogram_free(h);
 #define READ(...) histogram_read(h, FASTQ_FILE, KMER_SIZE)
 #define COUNT(x) histogram_count(h, x)
 #define FOR_EACH(x, y) fastq_for_each_kmer(FASTQ_FILE, KMER_SIZE, x, y);
+#define LOAD_FACTOR(...) histogram_load_factor(h)
 
 TEST(error_test1(), {
-	USING(MINSKETCH, minsketch_new(100, 100), {
+	USING(MINSKETCH, minsketch_new(256, 256), {
 		READ();
 		int n = 0;
 		float mean = 0.0;
@@ -46,11 +48,12 @@ TEST(error_test1(), {
 		FOR_EACH(kmer, {
 			int count = COUNT(kmer);
 			#if DEBUG_KMERS
-				PRINT("%s: %d", kmer, count);
+				PRINT("%s: %d (count)", kmer, count);
+        PRINT("%s: %u (hash)", kmer, hash(kmer, 0)%100);
 			#endif
 			if (count <= ceil(mean - 2 * stddev)) {
 				#if DEBUG_LIERS && DEBUG_KMERS == false
-					PRINT("%s: %d", kmer, count);
+					PRINT("%s: %u", kmer, count);
 				#endif
 				outliers++;
 			}
@@ -60,6 +63,7 @@ TEST(error_test1(), {
 			PRINT("mean: %f", mean);
 			PRINT("stddev: %f", stddev);
 			PRINT("outliers: %d (%f%%)", outliers, 100*outliers/(float)(n));
+      PRINT("load factor: %f%%", LOAD_FACTOR());
 		#endif
 		#if DEBUG_FAKES
 			char temp[KMER_SIZE * 2 + 1];

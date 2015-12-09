@@ -16,12 +16,20 @@ bloomfilter *bloomfilter_new(int m, int k) {
 		free(b);
 		return NULL;
 	}
+	if ((b->hashes = malloc(k * sizeof *b->hashes)) == NULL) {
+		free(b->bits);
+		free(b);
+		return NULL;
+	}
+	for (int i = 0; i < b->k; i++) {
+		b->hashes[i] = rand();
+	}
 	return b;
 }
 
 bool bloomfilter_add(bloomfilter *b, const char *str) {
 	for (int i = 0; i < b->k; i++) {
-		int bit = hash(str, i) % (b->len * sizeof(int));
+		int bit = hash(str, b->hashes[i]) % (b->len * sizeof(int));
 		int index = bit / sizeof(int);
 		int offset = bit % sizeof(int);
 		b->bits[index] = b->bits[index] | (1 << offset);
@@ -31,7 +39,7 @@ bool bloomfilter_add(bloomfilter *b, const char *str) {
 
 bool bloomfilter_get(bloomfilter *b, const char *str) {
 	for (int i = 0; i < b->len; i++) {
-		int bit = hash(str, i) % (b->len * sizeof(int));
+		int bit = hash(str, b->hashes[i]) % (b->len * sizeof(int));
 		int index = bit / sizeof(int);
 		int offset = bit % sizeof(int);
 		if (!(b->bits[index] & (1 << offset))) {
@@ -43,5 +51,6 @@ bool bloomfilter_get(bloomfilter *b, const char *str) {
 
 void bloomfilter_free(bloomfilter *b) {
 	free(b->bits);
+	free(b->hashes);
 	free(b);
 }

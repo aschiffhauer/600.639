@@ -7,6 +7,7 @@ typedef struct {
 	int w;
 	int d;
 	int **rows;
+	unsigned int *hashes;
 } minsketch;
 
 minsketch* minsketch_new(int w, int d);

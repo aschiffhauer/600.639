@@ -17,8 +17,16 @@ minsketch* minsketch_new(int w, int d) {
 	}
 	m->w = w;
 	m->d = d;
+	if ((m->hashes = malloc(m->d * sizeof *m->hashes)) == NULL) {
+		free(m);
+		return NULL;
+	}
+	for (int i = 0; i < m->d; i++) {
+		m->hashes[i] = rand();
+	}
 	m->rows = malloc(m->d * sizeof *m->rows);
 	if (m->rows == NULL) {
+		free(m->hashes);
 		free(m);
 		return NULL;
 	}
@@ -28,6 +36,7 @@ minsketch* minsketch_new(int w, int d) {
 				free(m->rows[j]);
 			}
 			free(m->rows);
+			free(m->hashes);
 			free(m);
 			return NULL;
 		}
@@ -47,8 +56,7 @@ int minsketch_get(minsketch *m, const char *str) {
 	int min = ~0U >> 1;
 	for (int i = 0; i < m->d; i++) {
 		int j = minsketch_hash(m, str, i);
-		min = MIN(min, m->rows[i][j]);
-		if (min == 0) {
+		if ((min = MIN(min, m->rows[i][j])) == 0) {
 			return 0;
 		}
 	}
@@ -70,9 +78,10 @@ void minsketch_free(minsketch *m) {
 		free(m->rows[i]);
 	}
 	free(m->rows);
+	free(m->hashes);
 	free(m);
 }
 
 static int minsketch_hash(minsketch *m, const char *str, int row) {
-	return hash(str, row)%(m->w);
+	return hash(str, m->hashes[row])%(m->w);
 }
