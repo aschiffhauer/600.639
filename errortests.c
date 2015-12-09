@@ -93,6 +93,7 @@ TEST(error_test2(), {
 		char previous[MAX_READ_LENGTH + 1];
 		READ();
 		fastq *f = fastq_new(FASTQ_FILE); 
+		ASSERT(f != NULL);
 		int n = 0;
 		while(fastq_read_line(f)) {
 			strcpy(previous, f->sequence);
@@ -103,6 +104,7 @@ TEST(error_test2(), {
 				#endif
 			}
 		}
+		fastq_free(f);
 		#if DEBUG_NSEQS
 			PRINT("errant sequences: %d", n);
 		#endif
