@@ -51,7 +51,7 @@ char *error_correct(histogram *h, char *sequence, int k, int cutoff) {
 				max_count = count;
 				max_nucleotide = 'T';
 			}
-			sequence[start + end - 1] = max_nucleotide;
+			sequence[end - 1] = max_nucleotide;
 			errant_kmer[errant_position] = max_nucleotide;
 			corrected = true;
 			break;
