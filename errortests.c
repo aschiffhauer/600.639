@@ -17,7 +17,7 @@
 #define FAKE_KMER "ATATATATAT"
 
 #define DEBUG_STATS true
-#define DEBUG_KMERS false
+#define DEBUG_KMERS true
 #define DEBUG_LIERS false
 #define DEBUG_FAKES false
 #define DEBUG_FAKER true
@@ -29,7 +29,7 @@
 #define LOAD_FACTOR(...) histogram_load_factor(h)
 
 TEST(error_test1(), {
-	USING(MINSKETCH, minsketch_new(256, 256), {
+	USING(MINSKETCH, minsketch_new(10000, 1), {
 		READ();
 		int n = 0;
 		float mean = 0.0;
@@ -48,7 +48,7 @@ TEST(error_test1(), {
 		FOR_EACH(kmer, {
 			int count = COUNT(kmer);
 			#if DEBUG_KMERS
-				PRINT("%s: %d (count)", kmer, count);
+				PRINT("%s", kmer);
 			#endif
 			if (count <= ceil(mean - 2 * stddev)) {
 				#if DEBUG_LIERS && DEBUG_KMERS == false
