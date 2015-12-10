@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-// This file
+// This file is a test suite for frequently used macros 
 #define PRINT(...) { fprintf(stdout, __VA_ARGS__); fprintf(stdout, "\n"); }
 #define ERROR(...) { fprintf(stderr, __VA_ARGS__); fprintf(stderr, "\n"); }
 #define LOCAL(...) { ERROR("%s: %s: %d", __FILE__, __FUNCTION__, __LINE__); }
