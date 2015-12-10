@@ -7,6 +7,7 @@
 #include "bloomfilter.h"
 #include "tests.h"
 
+#define GENERATE_NEW_FASTQ_FILE false
 #define NREADS 100
 #define KMER_SIZE 10
 #define FASTQ_FILE "reads_test.fastq"
@@ -64,10 +65,10 @@ TEST(fastq_test5(), {
 	ASSERT(entered == true);
 })
 
-TEST(fastq_test(bool generate_new_fatsq_file), {
-	if (generate_new_fatsq_file) {
+TEST(fastq_test(), {
+	#if GENERATE_NEW_FASTQ_FILE
 		ASSERT(fastq_test1() == true);
-	}
+	#endif
 	ASSERT(fastq_test2() == true);
 	ASSERT(fastq_test3() == true);
 	ASSERT(fastq_test4() == true);
