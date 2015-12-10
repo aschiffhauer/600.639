@@ -7,11 +7,18 @@
 #include "errortests.h"
 
 #define GENERATE_NEW_FASTQ_FILE false
+#define RUN_TESTS false
 
-int main (void) {
+static void test() {
+	#if RUN_TESTS
 	fastq_test(GENERATE_NEW_FASTQ_FILE);
 	bloomfilter_test();
 	minsketch_test();
 	histogram_test();
 	error_test();
+	#endif
+}
+
+int main (void) {
+	test();
 }
