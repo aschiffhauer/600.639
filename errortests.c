@@ -71,12 +71,14 @@ TEST(error_test1(), {
 			PRINT("outliers: %d (%f%%)", outliers, 100*outliers/(float)(n));
 			PRINT("load factor: %f%%", LOAD_FACTOR());
 		#endif
-		// Do other fake sequences appear frequently? Ideally, these would all have 0 frequency hits
+		// Do other fake sequences appear frequently? 
+		// Ideally, these would all have 0 frequency hits.
+		// Due to the probabilistic nature, however, we allow at most 1 hit.
 		char temp[KMER_SIZE * 2 + 1];
 		memset(temp, 0, KMER_SIZE * 2 + 1);
 		for (int i = 0; i < KMER_SIZE * 2; i++) {
 			temp[i] = 'A' + i;
-			ASSERT(COUNT(temp) == 0);
+			ASSERT(COUNT(temp) <= 1);
 		}
 	});
 })

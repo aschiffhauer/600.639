@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+// Driver for fastq tests
 bool fastq_test();
 
 #endif
