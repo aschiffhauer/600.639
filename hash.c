@@ -6,7 +6,15 @@
 
 #define NELEM(x) (sizeof(x) / sizeof((x)[0]))
 
-unsigned int hash(const char *str, unsigned int seed) {
+static inline unsigned int djb2(const char *str) {
+	unsigned long hash = 5381;
+	while (*str++) {
+		hash = ((hash << 5) + hash) + *(str - 1);
+	}
+	return (unsigned int)hash;
+}
+
+static inline unsigned int kmer_to_int(const char *str) {
 	if (!*str) {
 		return 0;
 	}
@@ -32,5 +40,10 @@ unsigned int hash(const char *str, unsigned int seed) {
 				break;
 		}
 	}
-	return hash % seed;
+	return hash;
+}
+
+unsigned int hash(const char *str, unsigned int seed) {
+	unsigned int hash = djb2(str) + kmer_to_int(str);
+	return hash ^ seed;
 }

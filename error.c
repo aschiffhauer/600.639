@@ -34,10 +34,10 @@ char *error_correct(histogram *h, char *sequence, int k, int cutoff) {
 	if (kmer_offset >= 0) {
 		int sequence_position = position - 1;
 		int kmer_position = 0;
-		// The error is in the last kmer
+		// Is the error is in the last kmer?
 		// Feel free to ignore this chunk of code, as it covers an edge case (and does so confusingly)
 		if (position - 1 >= MAX_READ_LENGTH - k) {
-			int n = strlen(sequence);
+			int n = (int)strlen(sequence);
 			char kmer_copy[MAX_READ_LENGTH + 1];
 			for (int i = n - 1, j = k - 1; i >= n - 1 - k; i--, j--) {
 				strncpy(kmer_copy, &sequence[i - k + 1], k);
@@ -60,8 +60,10 @@ char *error_correct(histogram *h, char *sequence, int k, int cutoff) {
 		error_correct_sequence(h, kmer, kmer_position, &count, &nucleotide, 'G');
 		error_correct_sequence(h, kmer, kmer_position, &count, &nucleotide, 'T');
 
-		sequence[sequence_position] = kmer[kmer_position];
-		return sequence;
+		if (sequence[sequence_position] != kmer[kmer_position]) {
+			sequence[sequence_position] = kmer[kmer_position];
+			return sequence;
+		}
 	}
 	return NULL;
 }

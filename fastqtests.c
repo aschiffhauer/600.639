@@ -9,7 +9,7 @@
 
 #define NREADS 100
 #define KMER_SIZE 10
-#define FASTQ_FILE "reads.fastq"
+#define FASTQ_FILE "reads_test.fastq"
 #define USING(x, y) fastq *f = fastq_new(x); ASSERT(f != NULL); y; fastq_free(f);
 #define FOR_EACH(x, y) fastq_for_each_kmer(FASTQ_FILE, KMER_SIZE, x, y);
 
@@ -18,7 +18,7 @@
 #define QUALITIES f->qualities
 
 TEST(fastq_test1(), {
-	fastq *f = fastq_generate("reads.fastq", NREADS);
+	fastq *f = fastq_generate("reads_test.fastq", NREADS);
 	ASSERT(f != NULL);
 	fastq_free(f);
 })

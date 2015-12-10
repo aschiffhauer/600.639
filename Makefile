@@ -6,6 +6,7 @@ HEADERS = \
 	bloomfiltertests.h \
 	error.h \
 	errortests.h \
+	experiment.h \
 	fastq.h \
 	fastqtests.h \
 	hash.h \
@@ -20,6 +21,7 @@ OBJECTS = \
 	bloomfiltertests.o \
 	error.o \
 	errortests.o \
+	experiment.o \
 	fastq.o \
 	fastqtests.o \
 	hash.o \

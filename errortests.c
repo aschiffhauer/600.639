@@ -14,7 +14,7 @@
 #include "error.h"
 
 #define KMER_SIZE 10
-#define FASTQ_FILE "reads.fastq"
+#define FASTQ_FILE "reads_test.fastq"
 #define FAKE_KMER "ATATATATAT"
 #define WIDTH 100
 #define HEIGHT 1
@@ -27,8 +27,8 @@
 #define DEBUG_FAKER false
 
 // error_test2 flags
-#define DEBUG_NSEQS true
-#define DEBUG_SEQS  true
+#define DEBUG_NSEQS false
+#define DEBUG_SEQS  false
 
 #define USING(x,y,z) histogram *h = histogram_new(x, y); ASSERT(h != NULL); z; histogram_free(h);
 #define READ(...) histogram_read(h, FASTQ_FILE, KMER_SIZE)
