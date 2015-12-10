@@ -10,7 +10,7 @@
 #define KMER_SIZE 10
 #define FASTQ_FILE_NAME "reads_experiment.fastq"
 #define MINSKETCH_WIDTH 10000
-#define MINSKETCH_HEIGHT 10
+#define MINSKETCH_HEIGHT 3
 #define KMER_CUTOFF 1
 
 #define CORRECT_KMER "CCCCCGTGAA"
