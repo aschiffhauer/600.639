@@ -14,7 +14,7 @@
 #define USING(x, y) fastq *f = fastq_new(x); ASSERT(f != NULL); y; fastq_free(f);
 #define FOR_EACH(x, y) fastq_for_each_kmer(FASTQ_FILE, KMER_SIZE, x, y);
 
-#define READ fastq_read_line(f)
+#define READ fastq_read(f)
 #define SEQUENCE f->sequence
 #define QUALITIES f->qualities
 

@@ -94,7 +94,7 @@ TEST(error_test2(), {
 		// Correct the *reads* of the file
 		fastq *f = fastq_new(FASTQ_FILE); 
 		ASSERT(f != NULL);
-		while(fastq_read_line(f)) {
+		while(fastq_read(f)) {
 			if (ERROR_CORRECT(f->sequence, CUTOFF)) {
 				ASSERT(strcmp(f->sequence, CORRECT_SEQUENCE) == 0);
 			}

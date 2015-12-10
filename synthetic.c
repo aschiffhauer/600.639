@@ -36,7 +36,7 @@ int main(void) {
 	// Iterate through all of the reads of the fastq file, outputting any corrections
 	fastq *f = fastq_new(FASTQ_FILE_NAME);
 	char sequence_copy[MAX_READ_LENGTH + 1];
-	while (fastq_read_line(f)) {
+	while (fastq_read(f)) {
 		strcpy(sequence_copy, f->sequence);
 		if (error_correct(h, f->sequence, KMER_SIZE, KMER_CUTOFF)) {
 			printf("correction:\n  old: %s\n  new: %s\n", sequence_copy, f->sequence);
