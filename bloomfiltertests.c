@@ -6,13 +6,12 @@
 #include "tests.h"
 #include "hash.h"
 
-#define USING(x,y,z) bloomfilter *b = bloomfilter_new(x,y); ASSERT(b != NULL); z; bloomfilter_free(b);
-
-#define ADD(x) bloomfilter_add(b, x)
-#define GET(x) bloomfilter_get(b, x)
+#define USING(m, k, expressions) bloomfilter *b = bloomfilter_new(m, k); ASSERT(b != NULL); {expressions}; bloomfilter_free(b);
+#define ADD(str) bloomfilter_add(b, str)
+#define GET(str) bloomfilter_get(b, str)
 
 TEST(bloomfilter_test1(), {
-	USING(100, 100, {
+	USING(256, 4, {
 		ASSERT(GET("AGTAGTAGTA") == false);
 		ASSERT(GET("TGATGATGAT") == false);
 		ASSERT(GET("GTAGTAGTAG") == false);

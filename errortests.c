@@ -14,7 +14,7 @@
 #include "error.h"
 
 #define KMER_SIZE 10
-#define FASTQ_FILE "reads_test.fastq"
+#define FASTQ_FILE "test.fastq"
 #define FAKE_KMER "ATATATATAT"
 #define WIDTH 100
 #define HEIGHT 1

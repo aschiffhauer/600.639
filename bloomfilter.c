@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "bloomfilter.h"
 #include "hash.h"
@@ -10,14 +11,15 @@ bloomfilter *bloomfilter_new(int m, int k) {
 	if (b == NULL) {
 		return NULL;
 	}
-	b->k = k;
-	b->len = m/sizeof *b->hashes + 1;
-	b->bits = calloc(b->len, sizeof *b->bits);
+	b->m = m;
+	b->len = b->m/(sizeof *b->hashes * 8) + 1;
+	b->bits = calloc(b->len, (sizeof *b->bits));
 	if (b->bits == NULL) {
 		free(b);
 		return NULL;
 	}
-	if ((b->hashes = malloc(k * sizeof *b->hashes)) == NULL) {
+	b->k = k;
+	if ((b->hashes = malloc(b->k * (sizeof *b->hashes))) == NULL) {
 		free(b->bits);
 		free(b);
 		return NULL;
@@ -31,9 +33,9 @@ bloomfilter *bloomfilter_new(int m, int k) {
 // Adds a string to a bloomfilter
 bool bloomfilter_add(bloomfilter *b, const char *str) {
 	for (int i = 0; i < b->k; i++) {
-		int bit = hash(str, b->hashes[i]) % (b->len * sizeof *b->bits);
-		int index = bit / sizeof *b->bits;
-		int offset = bit % sizeof *b->bits;
+		int bit = hash(str, b->hashes[i]) % b->m;
+		int index = bit / ((sizeof *b->bits) * 8);
+		int offset = bit % ((sizeof *b->bits) * 8);
 		b->bits[index] = b->bits[index] | (1 << offset);
 	}
 	return true;
@@ -41,11 +43,11 @@ bool bloomfilter_add(bloomfilter *b, const char *str) {
 
 // Queries whether a string appears in a bloomfilter
 bool bloomfilter_get(bloomfilter *b, const char *str) {
-	for (int i = 0; i < b->len; i++) {
-		int bit = hash(str, b->hashes[i]) % (b->len * sizeof *b->bits);
-		int index = bit / sizeof *b->bits;
-		int offset = bit % sizeof *b->bits;
-		if (!(b->bits[index] & (1 << offset))) {
+	for (int i = 0; i < b->k; i++) {
+		int bit = hash(str, b->hashes[i]) % b->m;
+		int index = bit / ((sizeof *b->bits) * 8);
+		int offset = bit % ((sizeof *b->bits) * 8);
+		if (((b->bits[index]) & (1 << offset)) == 0) {
 			return false;
 		}
 	}

@@ -10,7 +10,7 @@
 #include "tests.h"
 
 #define KMER_SIZE 6
-#define FASTQ_FILE "reads_test.fastq"
+#define FASTQ_FILE "test.fastq"
 
 #define USING(x,y,z) histogram *h = histogram_new(x, y); ASSERT(h != NULL); z; histogram_free(h);
 #define READ(...) histogram_read(h, FASTQ_FILE, KMER_SIZE)
