@@ -6,6 +6,7 @@
 #include "histogramtests.h"
 #include "errortests.h"
 
+// Runs all of the tests for data structures, file handling, error correction, etc.
 int main (void) {
 	fastq_test();
 	bloomfilter_test();
