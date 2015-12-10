@@ -24,6 +24,7 @@ fastq *fastq_new(const char *path);
 bool fastq_read(fastq *f); 
 // Frees all dynamic memory allocations associated with a fastq (including itself)
 void fastq_free(fastq* f);
+// A macro that iterates over all kmers in a fastq file that's located at path
 #define fastq_for_each_kmer(path, k, x, z) { \
 	fastq* f = fastq_new(path); \
 	if (f != NULL) { \
@@ -44,6 +45,7 @@ void fastq_free(fastq* f);
 		} \
 	} \
 }
+// A macro that iterates over all kmers of a sequence
 #define sequence_for_each_kmer(sequence, k, x, z) { \
 	char *(x) = malloc(k + 1); \
 	if (x != NULL) { \
