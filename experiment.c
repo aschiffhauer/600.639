@@ -10,11 +10,14 @@
 #define KMER_SIZE 10
 #define FASTQ_FILE_NAME "reads_experiment.fastq"
 #define MINSKETCH_WIDTH 10000
-#define MINSKETCH_HEIGHT 3
+#define MINSKETCH_HEIGHT 10
 #define KMER_CUTOFF 1
 
 #define CORRECT_KMER "CCCCCGTGAA"
 #define ERRANT_KMER  "CCCCCGTGAT"
+
+#define PRINT_CORRECTIONS true
+#define PRINT_CORRECT_VS_ERRANT false
 
 // CGTTTGGACCCTTTCAATGCTGATGGACTCACTTGACTTTTGTATGCCCAAAACCTTGAAACCCTTCAGAGACACACTCAGACGGCCCCCGTGAAGTGCT
 // was changed to
@@ -27,10 +30,17 @@ void experiment_run() {
 	while (fastq_read_line(f)) {
 		strcpy(sequence_copy, f->sequence);
 		if (error_correct(h, f->sequence, KMER_SIZE, KMER_CUTOFF)) {
-			printf("correction:\n  old: %s\n  new: %s\n", sequence_copy, f->sequence);
+			#if PRINT_CORRECTIONS
+				printf("correction:\n  old: %s\n  new: %s\n", sequence_copy, f->sequence);
+			#endif
 		}
 	}
 	
+	#if PRINT_CORRECT_VS_ERRANT
+		printf("correct: %d\n", histogram_count(h, CORRECT_KMER));
+		printf("errant: %d\n", histogram_count(h, ERRANT_KMER));
+	#endif
+
 	fastq_free(f);
 	histogram_free(h);
 }
