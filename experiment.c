@@ -22,7 +22,7 @@
 // CGTTTGGACCCTTTCAATGCTGATGGACTCACTTGACTTTTGTATGCCCAAAACCTTGAAACCCTTCAGAGACACACTCAGACGGCCCCCGTGAAGTGCT
 // was changed to
 // CGTTTGGACCCTTTCAATGCTGATGGACTCACTTGACTTTTGTATGCCCAAAACCTTGAAACCCTTCAGAGACACACTCAGACGGCCCCCGTGATGTGCT
-void experiment_run() {
+static void experiment_run_mock() {
 	histogram *h = histogram_new(MINSKETCH, minsketch_new(MINSKETCH_WIDTH, MINSKETCH_HEIGHT));
 	histogram_read(h, FASTQ_FILE_NAME, KMER_SIZE);
 	fastq *f = fastq_new(FASTQ_FILE_NAME);
@@ -43,4 +43,13 @@ void experiment_run() {
 
 	fastq_free(f);
 	histogram_free(h);
+}
+
+static void experiment_run_yeast() {
+
+}
+
+void experiment_run() {
+	experiment_run_mock();
+	experiment_run_yeast();
 }
