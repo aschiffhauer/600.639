@@ -13,33 +13,31 @@
 #include "hash.h"
 #include "error.h"
 
-#define KMER_SIZE 10
+// Global parameters for all tests
 #define FASTQ_FILE "test.fastq"
-#define FAKE_KMER "ATATATATAT"
-#define WIDTH 100
-#define HEIGHT 1
+#define KMER_SIZE 10
+#define MINSKETCH_WIDTH 50
+#define MINSKETCH_HEIGHT 3
 
-// error_test1 flags
-#define DEBUG_STATS false
-#define DEBUG_KMERS false
-#define DEBUG_LIERS false
-#define DEBUG_FAKES false
-#define DEBUG_FAKER false
-
-// error_test2 flags
-#define DEBUG_NSEQS false
-#define DEBUG_SEQS  false
-
-#define USING(x,y,z) histogram *h = histogram_new(x, y); ASSERT(h != NULL); z; histogram_free(h);
+// Macros that wrap common histogram uses for tests
+#define USING(type, counter, expressions) histogram *h = histogram_new(type, counter); ASSERT(h != NULL); expressions; histogram_free(h);
 #define READ(...) histogram_read(h, FASTQ_FILE, KMER_SIZE)
-#define COUNT(x) histogram_count(h, x)
-#define FOR_EACH_KMER(x, y) fastq_for_each_kmer(FASTQ_FILE, KMER_SIZE, x, y);
+#define COUNT(str) histogram_count(h, str)
+#define FOR_EACH_KMER(kmer, expressions) fastq_for_each_kmer(FASTQ_FILE, KMER_SIZE, kmer, expressions);
 #define LOAD_FACTOR(...) histogram_load_factor(h)
 #define ERROR_CORRECT(sequence, cutoff) error_correct(h, sequence, KMER_SIZE, cutoff)
 
+// Reads in a file comprising reads of all As with one errant T.
+// Calculates the mean, variance, standard deviation, and outliers
+// These are flags for the first test. 
+// Setting these to true/false will result in more output for human verification
+#define PRINT_STATS false
+#define PRINT_OUTLIERS false
 TEST(error_test1(), {
-	USING(MINSKETCH, minsketch_new(WIDTH, HEIGHT), {
+	USING(MINSKETCH, minsketch_new(MINSKETCH_WIDTH, MINSKETCH_HEIGHT), {
+		// Populate the histogram
 		READ();
+		// Calculate the mean
 		int n = 0;
 		float mean = 0.0;
 		FOR_EACH_KMER(kmer, {
@@ -47,70 +45,65 @@ TEST(error_test1(), {
 			mean += COUNT(kmer);
 		});
 		mean /= (float)n;
+		// Calculate the variance and standard deviation
 		float variance = 0.0f;
 		FOR_EACH_KMER(kmer, {
 			variance += powf(COUNT(kmer) - mean, 2);
 		});
 		variance /= n - 1;
 		float stddev = sqrtf(variance);
+		// Print out the outliers
 		int outliers = 0;
 		FOR_EACH_KMER(kmer, {
 			int count = COUNT(kmer);
-			#if DEBUG_KMERS
-				PRINT("%s", kmer);
-			#endif
 			if (count <= ceil(mean - 2 * stddev)) {
-				#if DEBUG_LIERS && DEBUG_KMERS == false
+				#if PRINT_OUTLIERS
 					PRINT("%s: %u", kmer, count);
 				#endif
 				outliers++;
 			}
 		});
-		#if DEBUG_STATS
+		// Print stats about #kmers, mean, standard deviation, outliers, and load factor
+		#if PRINT_STATS
 			PRINT("len: %d", n);
 			PRINT("mean: %f", mean);
 			PRINT("stddev: %f", stddev);
 			PRINT("outliers: %d (%f%%)", outliers, 100*outliers/(float)(n));
 			PRINT("load factor: %f%%", LOAD_FACTOR());
 		#endif
-		#if DEBUG_FAKES
-			char temp[KMER_SIZE * 2 + 1];
-			memset(temp, 0, KMER_SIZE * 2 + 1);
-			PRINT("fake reads:")
-			for (int i = 0; i < KMER_SIZE * 2; i++) {
-				temp[i] = 'A' + i;
-				PRINT("  %s: %d", temp, COUNT(temp));
-			}
-		#endif
-		#if DEBUG_FAKER
-			PRINT("%s: %d", FAKE_KMER, COUNT(FAKE_KMER));
-		#endif
+		// Do other fake sequences appear frequently? Ideally, these would all have 0 frequency hits
+		char temp[KMER_SIZE * 2 + 1];
+		memset(temp, 0, KMER_SIZE * 2 + 1);
+		for (int i = 0; i < KMER_SIZE * 2; i++) {
+			temp[i] = 'A' + i;
+			ASSERT(COUNT(temp) == 0);
+		}
 	});
 })
 
+// Reads in a file comprising reads of all As with one errant T.
+// The test will try to correct the sequence.
+// These are flags for the second test. 
+// Setting these to true/false will result in more output for human verification
+#define CUTOFF 1
+#define CORRECT_SEQUENCE "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 TEST(error_test2(), {
-	USING(MINSKETCH, minsketch_new(WIDTH, HEIGHT), {
-		char previous[MAX_READ_LENGTH + 1];
+	USING(MINSKETCH, minsketch_new(MINSKETCH_WIDTH, MINSKETCH_HEIGHT), {
+		// Populate the histogram
 		READ();
+		// Correct the *reads* of the file
 		fastq *f = fastq_new(FASTQ_FILE); 
 		ASSERT(f != NULL);
-		int n = 0;
 		while(fastq_read_line(f)) {
-			strcpy(previous, f->sequence);
-			if (ERROR_CORRECT(f->sequence, 10)) {
-				n++;
-				#if DEBUG_SEQS
-					PRINT("corrected: %s -> %s", previous, f->sequence);
-				#endif
+			if (ERROR_CORRECT(f->sequence, CUTOFF)) {
+				ASSERT(strcmp(f->sequence, CORRECT_SEQUENCE) == 0);
 			}
 		}
 		fastq_free(f);
-		#if DEBUG_NSEQS
-			PRINT("errant sequences: %d", n);
-		#endif
 	});
 });
 
+// Driver for error tests
 TEST(error_test(), {
 	ASSERT(error_test1() == true);
 	ASSERT(error_test2() == true);
