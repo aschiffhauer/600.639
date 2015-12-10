@@ -20,7 +20,7 @@
 #define HEIGHT 1
 
 // error_test1 flags
-#define DEBUG_STATS true
+#define DEBUG_STATS false
 #define DEBUG_KMERS false
 #define DEBUG_LIERS false
 #define DEBUG_FAKES false

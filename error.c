@@ -32,8 +32,21 @@ char *error_correct(histogram *h, char *sequence, int k, int cutoff) {
 		position++;
 	});
 	if (kmer_offset >= 0) {
+		int error_position = 0;
+		// The error is in the last kmer
+		// Feel free to ignore this chunk of code, as it covers an edge case (and does so confusingly)
 		if (position - 1 >= MAX_READ_LENGTH - k) {
-			printf("warning: the last kmer has an errant nucleotide...we can't fix that just yet\n");
+			int n = strlen(sequence);
+			char kmer_copy[MAX_READ_LENGTH + 1];
+			for (int i = n - 1; i >= n - 1 - k; i--) {
+				strncpy(kmer_copy, &sequence[i - k + 1], k);
+				kmer_copy[k] = '\0';
+				if (histogram_count(h, kmer_copy) > cutoff) {
+					error_position = i + 1; // The *previous* kmer was wrong!
+					break;
+				}
+			}
+			printf("warning: position %d is an errant nucleotide; it's in the last kmer, so we can't fix that just yet\n", error_position);
 		}
 		char kmer[MAX_READ_LENGTH + 1];
 		memcpy(kmer, &sequence[kmer_offset], k);
