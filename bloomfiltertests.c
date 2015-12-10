@@ -31,7 +31,7 @@ TEST(bloomfilter_test1(), {
 	});	
 })
 
-// A sufficiently small bloomfilter shouldn't give false negatives
+// A sufficiently small bloomfilter should give false positives
 TEST(bloomfilter_test2(), {
 	USING(2, 2, {
 		ASSERT(GET("AGTAGTAGTA") == false);
