@@ -59,7 +59,9 @@ $RECYCLE.BIN/
 *.lnk
 
 # GENOMICS
-ec
+tests
+experiment_synthetic
+experiment_yeast
 build.sh
 
 # C
