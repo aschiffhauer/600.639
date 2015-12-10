@@ -54,6 +54,17 @@ bool bloomfilter_get(bloomfilter *b, const char *str) {
 	return true;
 }
 
+// Gets the load factor (%) of a bloomfilter
+float bloomfilter_load_factor(bloomfilter *b) {
+	float hits;
+	for (int bit = 0; bit < b->m; bit++) {
+		int index = bit / ((sizeof *b->bits) * 8);
+		int offset = bit % ((sizeof *b->bits) * 8);
+		hits += ((b->bits[index]) & (1 << offset));
+	}
+	return hits/b->m;
+}
+
 // Frees all dynamic memory allocations associated with a bloomfilter (including itself)
 void bloomfilter_free(bloomfilter *b) {
 	free(b->bits);

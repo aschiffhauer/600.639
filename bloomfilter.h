@@ -18,6 +18,8 @@ bloomfilter *bloomfilter_new(int m, int k);
 bool bloomfilter_add(bloomfilter *b, const char *str);
 // Queries whether a string appears in a bloomfilter
 bool bloomfilter_get(bloomfilter *b, const char *str);
+// Gets the load factor (%) of a bloomfilter
+float bloomfilter_load_factor(bloomfilter *b);
 // Frees all dynamic memory allocations associated with a bloomfilter (including itself)
 void bloomfilter_free(bloomfilter *b);
 
