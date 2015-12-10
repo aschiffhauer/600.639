@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+// Driver for histogram tests
 bool histogram_test();
 
 #endif

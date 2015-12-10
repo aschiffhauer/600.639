@@ -13,7 +13,7 @@
 #include "hash.h"
 #include "error.h"
 
-// Global parameters for all tests
+// Global parameters for all error tests
 #define FASTQ_FILE "test.fastq"
 #define KMER_SIZE 10
 #define MINSKETCH_WIDTH 50

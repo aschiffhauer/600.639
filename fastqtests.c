@@ -7,7 +7,7 @@
 #include "bloomfilter.h"
 #include "tests.h"
 
-// Global parameters for this test
+// Global parameters for all fastq tests
 #define KMER_SIZE 10
 #define FASTQ_FILE "test.fastq"
 
