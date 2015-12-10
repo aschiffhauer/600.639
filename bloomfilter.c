@@ -28,7 +28,7 @@ bloomfilter *bloomfilter_new(int m, int k) {
 	return b;
 }
 
-// Adds a string to the bloom filter
+// Adds a string to a bloomfilter
 bool bloomfilter_add(bloomfilter *b, const char *str) {
 	for (int i = 0; i < b->k; i++) {
 		int bit = hash(str, b->hashes[i]) % (b->len * sizeof *b->bits);
@@ -39,11 +39,12 @@ bool bloomfilter_add(bloomfilter *b, const char *str) {
 	return true;
 }
 
+// Queries whether a string appears in a bloomfilter
 bool bloomfilter_get(bloomfilter *b, const char *str) {
 	for (int i = 0; i < b->len; i++) {
-		int bit = hash(str, b->hashes[i]) % (b->len * sizeof(int));
-		int index = bit / sizeof(int);
-		int offset = bit % sizeof(int);
+		int bit = hash(str, b->hashes[i]) % (b->len * sizeof *b->bits);
+		int index = bit / sizeof *b->bits;
+		int offset = bit % sizeof *b->bits;
 		if (!(b->bits[index] & (1 << offset))) {
 			return false;
 		}
@@ -51,6 +52,7 @@ bool bloomfilter_get(bloomfilter *b, const char *str) {
 	return true;
 }
 
+// Frees all dynamic memory allocations associated with a bloomfilter (including itself)
 void bloomfilter_free(bloomfilter *b) {
 	free(b->bits);
 	free(b->hashes);
