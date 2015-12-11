@@ -63,6 +63,7 @@ tests
 experiment_synthetic
 experiment_yeast
 correct
+kmerprinter
 build.sh
 
 # C
