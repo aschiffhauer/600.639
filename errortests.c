@@ -73,12 +73,12 @@ TEST(error_test1(), {
 		#endif
 		// Do other fake sequences appear frequently? 
 		// Ideally, these would all have 0 frequency hits.
-		// Due to the probabilistic nature, however, we allow at most 1 hit.
+		// Failing here means someone either changed the hash functions or drew unlucky seeds
 		char temp[KMER_SIZE * 2 + 1];
 		memset(temp, 0, KMER_SIZE * 2 + 1);
 		for (int i = 0; i < KMER_SIZE * 2; i++) {
 			temp[i] = 'A' + i;
-			ASSERT(COUNT(temp) <= 1);
+			ASSERT(COUNT(temp) == 0);
 		}
 	});
 })
