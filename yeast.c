@@ -28,6 +28,7 @@ int main(void) {
 
 	// Print out some debug information for the user
 	printf("experiment parameters:\n");
+	printf("  kmer size: %d\n", KMER_SIZE);
 	printf("  frequency cutoff for error correction: %d\n", FREQUENCY_CUTOFF);
 
 	// Iterate through all of the reads of the fastq file, outputting any corrections
@@ -40,21 +41,19 @@ int main(void) {
 		length++;
 		strcpy(sequence_copy, f->sequence);
 		int i = 0;
-		int corrected = false;
 		while (error_correct(h, f->sequence, KMER_SIZE, FREQUENCY_CUTOFF)) {
-			corrections++;
-			corrected = true;
 			strncpy(kmer, f->sequence, KMER_SIZE);
 			// Infinite loop
 			if (++i >= KMER_SIZE) {
 				break;
 			}
 		}
-		if (corrected) {
+		if (strcmp(sequence_copy, f->sequence) != 0) {
+			corrections++;
 			printf("correction:\n  old: %s\n  new: %s\n", sequence_copy, f->sequence);
 		}
 	}
-	
+
 	printf("corrected %f%% of sequences\n", 100 * ((float)(corrections)/((float) (length))));
 
 	// Clean up file handles and allocations
