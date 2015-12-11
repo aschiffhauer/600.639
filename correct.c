@@ -41,7 +41,8 @@ int main(int argc, const char* argv[]) {
 	if (input_file_name == NULL || *input_file_name == '\0'
   ||  output_file_name == NULL || *output_file_name == '\0'
 	||  kmer_size <= 0
-	||  minsketch_width <= 0 || minsketch_height <= 0) {
+	||  minsketch_width <= 0 || minsketch_height <= 0
+	||  frequency_cutoff <= 0) {
 		USAGE("invalid arguments\n")
 	}
 
