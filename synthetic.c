@@ -14,7 +14,7 @@
 #define FASTQ_FILE_NAME "synthetic.fastq"
 #define KMER_SIZE 10
 #define MINSKETCH_WIDTH 0x8000 // 32 kilobytes (~1% of the memory!)
-#define MINSKETCH_HEIGHT 4
+#define MINSKETCH_HEIGHT 1
 #define FREQUENCY_CUTOFF 1
 #define CORRECT_KMER    "CCCCCGTGAA"
 #define INCORRECT_KMER  "CCCCCGTGAT"
