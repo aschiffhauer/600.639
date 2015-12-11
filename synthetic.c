@@ -13,7 +13,7 @@
 // 2,880,000 nucleotides = 2.88 MB to store all kmers in memory
 #define FASTQ_FILE_NAME "synthetic.fastq"
 #define KMER_SIZE 10
-#define MINSKETCH_WIDTH 8192*2*2*2
+#define MINSKETCH_WIDTH 0x8000 // 32 kilobytes (~1% of the memory!)
 #define MINSKETCH_HEIGHT 4
 #define FREQUENCY_CUTOFF 1
 #define CORRECT_KMER    "CCCCCGTGAA"
