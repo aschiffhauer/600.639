@@ -12,6 +12,7 @@
 // 5,522,256 kmers * 16 nucleotides per sequence = 88,356,096 nucleotides
 // 88,356,096 nucleotides = 88.4 MB to store all kmers in memory
 #define FASTQ_FILE_NAME "yeast.fastq"
+#define FASTQ_CORRECTED_FILE_NAME "yeast_corrected.fastq"
 #define KMER_SIZE 8
 #define MINSKETCH_WIDTH 0x800000 // 8 megabytes (~10% of the memory!)
 #define MINSKETCH_HEIGHT 1
@@ -25,6 +26,13 @@ int main(void) {
 	// Setup the minsketch-based histogram and read in all the kmers from fastq file
 	histogram *h = histogram_new(MINSKETCH, minsketch_new(MINSKETCH_WIDTH, MINSKETCH_HEIGHT));
 	histogram_read(h, FASTQ_FILE_NAME, KMER_SIZE);
+
+	// Setup writing to file
+	FILE *file = fopen(FASTQ_CORRECTED_FILE_NAME, "w");
+	if (file == NULL) {
+		fprintf(stderr, "failed to open %s for writing\n", FASTQ_CORRECTED_FILE_NAME);
+		return -1;
+	}
 
 	// Print out some debug information for the user
 	printf("experiment parameters:\n");
@@ -43,18 +51,28 @@ int main(void) {
 		int i = 0;
 		while (error_correct(h, f->sequence, KMER_SIZE, FREQUENCY_CUTOFF)) {
 			strncpy(kmer, f->sequence, KMER_SIZE);
-			// Infinite loop
+			// Guard against infinite looping
 			if (++i >= KMER_SIZE) {
 				break;
 			}
 		}
+		// Output any corrections to stdout
 		if (strcmp(sequence_copy, f->sequence) != 0) {
 			corrections++;
 			printf("correction:\n  old: %s\n  new: %s\n", sequence_copy, f->sequence);
 		}
+		// Write to corrected fastq file
+		if (fprintf(file, "%s\n%s\n%s\n%s\n", f->identifier, f->sequence, f->optional, f->qualities) < 0) {
+			fprintf(stderr, "failed to write to %s\n", FASTQ_CORRECTED_FILE_NAME);
+			return -1;
+			fclose(file);
+		}
 	}
 
+	// Print out summary
 	printf("corrected %f%% of sequences\n", 100 * ((float)(corrections)/((float) (length))));
+	printf("%s contains corrected reads\n", FASTQ_CORRECTED_FILE_NAME);
+	fclose(file);
 
 	// Clean up file handles and allocations
 	fastq_free(f);

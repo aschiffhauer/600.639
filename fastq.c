@@ -69,14 +69,29 @@ fastq *fastq_new(const char *path) {
 		free(f);
 		return NULL;
 	}
+	if ((f->identifier = malloc((BUFFER_LENGTH) * sizeof(char))) == NULL) { 
+		fclose(f->file);
+		free(f);
+		return NULL;
+	}
 	if ((f->sequence = malloc((BUFFER_LENGTH) * sizeof(char))) == NULL) {
 		fclose(f->file);
+		free(f->identifier);
+		free(f);
+		return NULL;
+	}	
+	if ((f->optional = malloc((BUFFER_LENGTH) * sizeof(char))) == NULL) {
+		fclose(f->file);
+		free(f->identifier);
+		free(f->sequence);
 		free(f);
 		return NULL;
 	}
 	if ((f->qualities = malloc((BUFFER_LENGTH) * sizeof(char))) == NULL) {
 		fclose(f->file);
+		free(f->identifier);
 		free(f->sequence);
+		free(f->optional);
 		free(f);
 		return NULL;
 	}
@@ -86,23 +101,16 @@ fastq *fastq_new(const char *path) {
 // Reads in the next sequence into f->sequence and qualities into f->qualities.
 // Returns true if the next sequential read was available on disk; otherwise false
 bool fastq_read(fastq *f) {
-	static char temp[MAX_READ_LENGTH + 1];
-	if (fgets(temp, BUFFER_LENGTH, f->file) == NULL) {
+	if (fgets(f->identifier, BUFFER_LENGTH, f->file) == NULL || string_strip(f->identifier) == NULL) {
 		return false;
 	}
-	if (fgets(f->sequence, BUFFER_LENGTH, f->file) == NULL) {
+	if (fgets(f->sequence, BUFFER_LENGTH, f->file) == NULL || string_strip(f->sequence) == NULL) {
 		return false;
 	}
-	if (string_strip(f->sequence) == NULL) {
+	if (fgets(f->optional, BUFFER_LENGTH, f->file) == NULL || string_strip(f->optional) == NULL) {
 		return false;
 	}
-	if (fgets(temp, BUFFER_LENGTH, f->file) == NULL) {
-		return false;
-	}
-	if (fgets(f->qualities, BUFFER_LENGTH, f->file) == NULL) {
-		return false;
-	}
-	if (string_strip(f->qualities) == NULL) {
+	if (fgets(f->qualities, BUFFER_LENGTH, f->file) == NULL || string_strip(f->qualities) == NULL) {
 		return false;
 	}
 	return true;
@@ -111,7 +119,9 @@ bool fastq_read(fastq *f) {
 // Frees all dynamic memory allocations associated with a fastq (including itself)
 void fastq_free(fastq* f) {
 	fclose(f->file);
+	free(f->identifier);
 	free(f->sequence);
 	free(f->qualities);
+	free(f->optional);
 	free(f);
 }

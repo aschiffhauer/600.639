@@ -10,9 +10,11 @@
 #define BUFFER_LENGTH (MAX_READ_LENGTH + 2) // Provides cushion for new line characters and null termination
 
 typedef struct {
-	FILE *file;      // file handle to fastq file
-	char *sequence;  // the sequence currently in-memory
-	char *qualities; // the qualities currently in-memory
+	FILE *file;       // file handle to fastq file
+	char *identifier; // the identifier currently in-memory
+	char *sequence;   // the sequence currently in-memory
+	char *optional;   // the optional identifier currently in-memory;
+	char *qualities;  // the qualities currently in-memory
 } fastq;
 
 // Generates a fastq file at path with n random reads of size MAX_READ_LENGTH (and invalid phred scores).
