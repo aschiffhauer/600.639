@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+// Driver for error tests
 bool error_test();
 
 #endif

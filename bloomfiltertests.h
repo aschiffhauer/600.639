@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+// Driver for bloomfilter tests
 bool bloomfilter_test();
 
 #endif

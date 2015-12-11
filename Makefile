@@ -27,16 +27,26 @@ OBJECTS = \
 	histogramtests.o \
 	minsketch.o \
 	minsketchtests.o \
-	main.o \
-
-default: ec
 
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-ec: $(OBJECTS)
-	$(CC) $(OBJECTS) -o $@
+default: tests experiment_synthetic experiment_yeast
+
+tests: $(OBJECTS) tests.o
+	$(CC) $(OBJECTS) tests.o -o $@
+
+experiment_synthetic: $(OBJECTS) synthetic.o
+	$(CC) $(OBJECTS) synthetic.o -o $@
+
+experiment_yeast: $(OBJECTS) yeast.o
+	$(CC) $(OBJECTS) yeast.o -o $@
 
 clean:
 	-rm -f $(OBJECTS)
-	-rm -f ec
+	-rm -f experiment_yeast
+	-rm -f experiment_synthetic
+	-rm -f tests
+	-rm -f tests.o
+	-rm -f synthetic.o
+	-rm -f yeast.o

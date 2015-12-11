@@ -6,13 +6,14 @@
 #include "tests.h"
 #include "hash.h"
 
-#define USING(x,y,z) bloomfilter *b = bloomfilter_new(x,y); ASSERT(b != NULL); z; bloomfilter_free(b);
+// Macros that wrap common bloomfilter uses for tests
+#define USING(m, k, expressions) bloomfilter *b = bloomfilter_new(m, k); ASSERT(b != NULL); {expressions}; bloomfilter_free(b);
+#define ADD(str) bloomfilter_add(b, str)
+#define GET(str) bloomfilter_get(b, str)
 
-#define ADD(x) bloomfilter_add(b, x)
-#define GET(x) bloomfilter_get(b, x)
-
+// A sufficiently large bloomfilter shouldn't give false positives
 TEST(bloomfilter_test1(), {
-	USING(100, 100, {
+	USING(256, 4, {
 		ASSERT(GET("AGTAGTAGTA") == false);
 		ASSERT(GET("TGATGATGAT") == false);
 		ASSERT(GET("GTAGTAGTAG") == false);
@@ -25,11 +26,12 @@ TEST(bloomfilter_test1(), {
 		ASSERT(GET("TGATGATGAT") == true);
 		ASSERT(GET("GTAGTAGTAG") == true);
 		
-		ASSERT(GET("CATCATCATC") == false);
-		ASSERT(GET("TAGTAGTAGT") == false);
+		ASSERT(GET("CATCATCATC") == false); // Was never added
+		ASSERT(GET("TAGTAGTAGT") == false); // Was never added
 	});	
 })
 
+// A sufficiently small bloomfilter should give false positives
 TEST(bloomfilter_test2(), {
 	USING(2, 2, {
 		ASSERT(GET("AGTAGTAGTA") == false);
@@ -49,9 +51,11 @@ TEST(bloomfilter_test2(), {
 		ASSERT(GET("GTAGTAGTAG") == true);
 		ASSERT(GET("CATCATCATC") == true);
 		ASSERT(GET("TAGTAGTAGT") == true);
+		ASSERT(GET("GATGATGATG") == true); // Was never added
 	});
 })
 
+// Driver for bloomfilter tests
 TEST(bloomfilter_test(), {
 	ASSERT(bloomfilter_test1() == true);
 	ASSERT(bloomfilter_test2() == true);

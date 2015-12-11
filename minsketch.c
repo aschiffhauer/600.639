@@ -8,8 +8,7 @@
 
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
-static int minsketch_hash(minsketch *m, const char *str, int row);
-
+// Create a new bloomfilter with m bits and k hash functions
 minsketch* minsketch_new(int w, int d) {
 	minsketch *m = malloc(sizeof *m);
 	if (m == NULL) {
@@ -44,18 +43,20 @@ minsketch* minsketch_new(int w, int d) {
 	return m;
 }
 
+// Adds a string to a bloomfilter
 bool minsketch_add(minsketch *m, const char *str) {
 	for (int i = 0; i < m->d; i++) {
-		int j = minsketch_hash(m, str, i);
+		int j = hash(str, m->hashes[i]) % (m->w);
 		m->rows[i][j]++;
 	}
 	return true;
 }
 
+// Queries whether a string appears in a bloomfilter
 int minsketch_get(minsketch *m, const char *str) {
 	int min = ~0U >> 1;
 	for (int i = 0; i < m->d; i++) {
-		int j = minsketch_hash(m, str, i);
+		int j = hash(str, m->hashes[i]) % (m->w);
 		if ((min = MIN(min, m->rows[i][j])) == 0) {
 			return 0;
 		}
@@ -63,6 +64,7 @@ int minsketch_get(minsketch *m, const char *str) {
 	return min;
 }
 
+// Gets the load factor (%) of a bloomfilter
 float minsketch_load_factor(minsketch *m) {
 	int hits = 0;
 	for (int i = 0; i < m->d; i++) {
@@ -73,6 +75,7 @@ float minsketch_load_factor(minsketch *m) {
 	return ((float)hits)/(m->d * m->w);
 }
 
+// Frees all dynamic memory allocations associated with a bloomfilter (including itself)
 void minsketch_free(minsketch *m) {
 	for (int i = 0; i < m->d; i++) {
 		free(m->rows[i]);
@@ -80,8 +83,4 @@ void minsketch_free(minsketch *m) {
 	free(m->rows);
 	free(m->hashes);
 	free(m);
-}
-
-static int minsketch_hash(minsketch *m, const char *str, int row) {
-	return hash(str, m->hashes[row])%(m->w);
 }

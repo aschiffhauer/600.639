@@ -5,13 +5,14 @@
 #include "minsketchtests.h"
 #include "tests.h"
 
-#define USING(x,y,z) minsketch *m = minsketch_new(x,y); ASSERT(m != NULL); z; minsketch_free(m);
+// Macros that wrap common minsketch uses for tests
+#define USING(w, d, expressions) minsketch *m = minsketch_new(w, d); ASSERT(m != NULL); expressions; minsketch_free(m);
+#define ADD(str) minsketch_add(m, str)
+#define GET(str) minsketch_get(m, str)
 
-#define ADD(x) minsketch_add(m, x)
-#define GET(x) minsketch_get(m, x)
-
+// A sufficiently large minsketch shouldn't give false positives
 TEST(minsketch_test1(), {
-	USING(100, 100, {
+	USING(256, 4, {
 		ASSERT(GET("A") == 0);
 		ASSERT(GET("AA") == 0);
 		ASSERT(GET("AAA") == 0);
@@ -29,6 +30,7 @@ TEST(minsketch_test1(), {
 	});
 });
 
+// A sufficiently small minsketch should give false positives
 TEST(minsketch_test2(), {
 	USING(2, 2, {
 		ASSERT(GET("A") == 0);
@@ -56,6 +58,7 @@ TEST(minsketch_test2(), {
 	});
 });
 
+// Driver for minsketch tests
 TEST(minsketch_test(), {
 	ASSERT(minsketch_test1() == true);
 	ASSERT(minsketch_test2() == true);
