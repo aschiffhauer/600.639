@@ -62,6 +62,7 @@ $RECYCLE.BIN/
 tests
 experiment_synthetic
 experiment_yeast
+correct
 build.sh
 
 # C

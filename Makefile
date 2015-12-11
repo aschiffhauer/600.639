@@ -42,6 +42,9 @@ experiment_synthetic: $(OBJECTS) synthetic.o
 experiment_yeast: $(OBJECTS) yeast.o
 	$(CC) $(OBJECTS) yeast.o -o $@
 
+correct: $(OBJECTS) correct.o
+	$(CC) $(OBJECTS) correct.o -o $@
+
 clean:
 	-rm -f $(OBJECTS)
 	-rm -f experiment_yeast
@@ -50,3 +53,4 @@ clean:
 	-rm -f tests.o
 	-rm -f synthetic.o
 	-rm -f yeast.o
+	-rm -f correct.o
