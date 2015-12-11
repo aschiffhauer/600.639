@@ -5,17 +5,17 @@
 #include "fastq.h"
 #include "histogram.h"
 
-// kmer[position] = nucleotide if the frequency it appears in histogram is greater than max_count.
+// kmer[apex] = nucleotide if the frequency it appears in histogram is greater than max_count.
 // max_count and max_nucleotide are updated if the swap occurs
-static void error_correct_sequence(histogram *h, char *kmer, int position, int *max_count, char *max_nucleotide, char nucleotide) {
+static void error_correct_sequence(histogram *h, char *kmer, int apex, int *max_count, char *max_nucleotide, char nucleotide) {
 	char kmer_copy[MAX_READ_LENGTH + 1];
 	strcpy(kmer_copy, kmer);
-	kmer_copy[position] = nucleotide;
+	kmer_copy[apex] = nucleotide;
 	int count = histogram_count(h, kmer_copy);
 	if (count > *max_count) {
 		*max_count = count;
 		*max_nucleotide = nucleotide;
-		kmer[position] = nucleotide;
+		kmer[apex] = nucleotide;
 	}
 }
 
@@ -27,43 +27,32 @@ char *error_correct(histogram *h, char *sequence, int k, int cutoff) {
 	// Then find the "end" index where the frequency recovers and rises above cutoff.
 	// Using these two indices, we can determine the index of the errant nucleotide.
 	// We greedily correct the error, choosing the nucleotide that maximizes the frequency in the histogram.
-	int kmer_offset = -1;
-	int position = 0;
+	int base = -1, apex = 0;
+	bool finished = false;
 	sequence_for_each_kmer(sequence, k, kmer, {
 		if (histogram_count(h, kmer) <= cutoff) {
-			if (kmer_offset == -1) {
-				kmer_offset = position;
+			if (base == -1) {
+				base = apex;
 			}
 		}
-		else if (kmer_offset >= 0) {
+		else if (base >= 0) {
+			finished = true;
 			break;
 		}
-		position++;
+		apex++;
 	});
-	if (kmer_offset >= 0) {
+	if (base >= 0) {
 		// Copy the errant kmer into its own string
 		char kmer[MAX_READ_LENGTH + 1];
-		memcpy(kmer, &sequence[kmer_offset], k);
+		memcpy(kmer, &sequence[base], k);
 		kmer[k] = '\0';
-		// Calculate the position of the errant nucleotide in the sequence and the kmer
-		int sequence_position = position - 1;
-		int kmer_position = 0;
+		// Calculate the apex of the errant nucleotide in the sequence and the kmer
+		int sequence_position = apex - 1;
+		int kmer_position = (apex - 1) - base;
 		// Is the errant nucleotide in the last kmer?
-		// Feel free to ignore this chunk of code.
-		// It covers an (important) edge case, but it isn't very straightforward.
-		// It updates sequence_position and kmer_position to be correct when this occurs.
-		if (position - 1 >= MAX_READ_LENGTH - k) {
-			int n = (int) strlen(sequence);
-			char kmer_copy[MAX_READ_LENGTH + 1];
-			for (int i = n - 1, j = k - 1; i >= n - 1 - k; i--, j--) {
-				strncpy(kmer_copy, &sequence[i - k + 1], k);
-				kmer_copy[k] = '\0';
-				if (histogram_count(h, kmer_copy) > cutoff) {
-					sequence_position = i + 1; // The *previous* kmer was wrong! (hance the + 1)
-					kmer_position = j + 1; // The *previous* kmer was wrong! (hence the + 1)
-					break;
-				}
-			}
+		if (finished == false) {
+			sequence_position = base + k - 1;
+			kmer_position = k - 1;
 		}
 		// At this point, both sequence_position and kmer_position are correct
 		// We maximize the frequency the kmer occurs, trying all values of A, C, G, or T

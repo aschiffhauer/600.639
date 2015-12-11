@@ -34,10 +34,13 @@ void fastq_free(fastq* f);
 		} \
 		else { \
 			while (fastq_read(f)) { \
-				for (int i = 0; i <= MAX_READ_LENGTH - k; i++) { \
-					strncpy((x), f->sequence + i, k); \
-					(x)[k] = '\0'; \
-					z; \
+				int sequence_len = (int) strlen(f->sequence); \
+				if (sequence_len > 0) { \
+					for (int i = 0; i <= sequence_len - k; i++) { \
+						strncpy((x), f->sequence + i, k); \
+						(x)[k] = '\0'; \
+						z; \
+					} \
 				} \
 			} \
 			free((x)); \
@@ -47,14 +50,17 @@ void fastq_free(fastq* f);
 }
 // A macro that iterates over all kmers of a sequence
 #define sequence_for_each_kmer(sequence, k, x, z) { \
-	char *(x) = malloc(k + 1); \
-	if (x != NULL) { \
-		for (int i = 0; i <= MAX_READ_LENGTH - k; i++) { \
-			strncpy((x), sequence + i, k); \
-			(x)[k] = '\0'; \
-			z; \
+	int sequence_len = (int) strlen(sequence); \
+	if (sequence_len > 0) { \
+		char *(x) = malloc(k + 1); \
+		if (x != NULL) { \
+			for (int i = 0; i <= sequence_len - k; i++) { \
+				strncpy((x), sequence + i, k); \
+				(x)[k] = '\0'; \
+				z; \
+			} \
+			free(x); \
 		} \
-		free(x); \
 	} \
 }
 
