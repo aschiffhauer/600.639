@@ -11,9 +11,11 @@
 // 3,200 sequences * 90 kmers per sequence = 288,000 kmers
 // 288,000 kmers * 10 nucleotides per sequence = 2,880,000 nucleotides
 // 2,880,000 nucleotides = 2.88 MB to store all kmers in memory
+// Since we duplicated the file 31 times, 2.88 MB/32 yields the expected amount of memory
+// (100 KB) to store each references to each (can't forget the terminating '\0').
 #define FASTQ_FILE_NAME "synthetic.fastq"
 #define KMER_SIZE 10
-#define MINSKETCH_WIDTH 0x8000 // 32 kilobytes (~1% of the memory!)
+#define MINSKETCH_WIDTH 0x8000 // 32 kilobytes (~32% of the memory!)
 #define MINSKETCH_HEIGHT 1
 #define FREQUENCY_CUTOFF 1
 #define CORRECT_KMER    "CCCCCGTGAA"
