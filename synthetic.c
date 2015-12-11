@@ -43,7 +43,7 @@ int main(void) {
 	char kmer[KMER_SIZE + 1];
 	while (fastq_read(f)) {
 		strcpy(sequence_copy, f->sequence);
-		if (error_correct(h, f->sequence, KMER_SIZE, FREQUENCY_CUTOFF)) {
+		while (error_correct(h, f->sequence, KMER_SIZE, FREQUENCY_CUTOFF)) {
 			strncpy(kmer, f->sequence, KMER_SIZE);
 			printf("correction:\n  old: %s\n  new: %s\n", sequence_copy, f->sequence);
 		}
