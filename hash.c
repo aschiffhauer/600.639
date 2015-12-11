@@ -20,7 +20,7 @@ static inline unsigned int kmer_to_int(const char *str) {
 	if (!*str) {
 		return 0;
 	}
-	unsigned int hash = 0;
+	unsigned int hash = 1;
 	unsigned long n = strlen(str);
 	for (unsigned int i = 0; i < n; i++) {
 		hash <<= BITS_PER_CHAR;

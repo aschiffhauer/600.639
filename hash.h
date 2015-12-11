@@ -2,7 +2,7 @@
 #define _HASH_H
 
 #define BITS_PER_CHAR (2) // Number of bits used per nucleotide
-#define MAX_KMER_SIZE (((sizeof(unsigned int) * 8)/BITS_PER_CHAR)) // Recommended max kmer size (16)
+#define MAX_KMER_SIZE (((sizeof(unsigned int) * 8)/BITS_PER_CHAR) - 1) // Recommended max kmer size (15)
 #define A 0x0  // 0b00
 #define C 0x1  // 0b01
 #define G 0x2  // 0b10
