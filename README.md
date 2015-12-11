@@ -1,7 +1,7 @@
 # Build and run
 
 ```
-$ make
+$ make clean && make
 $ ./tests                 # runs the test suite
 $ ./experiment_synthetic  # runs an experiment on synthetic reads
 $ ./experiment_yeast      # runs an experiment on Saccharomyces cerevisiae (brewer's yeast) reads
