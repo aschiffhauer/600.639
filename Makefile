@@ -31,7 +31,7 @@ OBJECTS = \
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-default: tests experiment_synthetic experiment_yeast
+default: tests experiment_synthetic experiment_yeast correct
 
 tests: $(OBJECTS) tests.o
 	$(CC) $(OBJECTS) tests.o -o $@

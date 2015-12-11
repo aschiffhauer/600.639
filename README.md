@@ -5,6 +5,7 @@ $ make clean && make
 $ ./tests                 # runs the test suite
 $ ./experiment_synthetic  # runs an experiment on synthetic reads
 $ ./experiment_yeast      # runs an experiment on Saccharomyces cerevisiae (brewer's yeast) reads
+$ ./correct yeast.fastq yeast_corrected.fastq 8 8388608 1 1 (equivalent to ./experiment_yeast)
 ```
 
 Requirements: C99 compliant compiler (e.g. GCC or LLVM)
@@ -17,6 +18,7 @@ Note: Untested on Windows
 - `tests` Runs all tests (see below)
 - `synthetic` Corrects sequences from synthetic reads (synthetic.fastq)
 - `yeast` Corrects sequences from Saccharomyces cerevisiae (yeast.fastq) reads into corrected_yeast.fasq
+- `correct` ./correct (input) (output) (kmer_size) (minsketch_width) (minsketch_height) (frequency_cutoff)
 
 ## Data structures
 - `bloomfilter` Bloom filter implementation
