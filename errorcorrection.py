@@ -14,8 +14,11 @@ Best way may be a shifting corrector that takes the highest frequency kmer of al
 with paired ends reads we may want to alternate first/last +- 1 
 '''
 
+from __future__ import print_function
+
 import itertools as it
 from countminsketch import CountMinSketch as cms
+import sys
 
 
 
@@ -122,14 +125,14 @@ class ErrorCorrector:
             kmerQ = qual[i:i+self._klength]
             kmerQ = self.sumQString(kmerQ)
             kmerNew, freq = self.correctKmer(kmerS, seq, kmerQ)
-            print kmerS, self.countmin[kmerS], kmerNew, freq
+            print (kmerS+" "+self.countmin[kmerS]+" "+kmerNew+" "+freq)
             if (freq < self._othresh):
                 ecount+=1
             if freq > self.countmin[kmerS]:
-                print "BEFORE CHANGE", seq
-                print seq[:i], kmerNew, seq[i+self._klength:]
+                print ("BEFORE CHANGE "+ seq)
+                print (seq[:i]+" "+kmerNew+" "+seq[i+self._klength:])
                 seq = seq[:i] + kmerNew + seq[i+self._klength:]
-                print "SEQ CHANGED", seq
+                print ("SEQ CHANGED "+ seq)
             if ecount >= self._ethresh:
                 return "READ INVALID"
         return seq
@@ -159,20 +162,65 @@ class ErrorCorrector:
                 result=max(results)
                 return result[1], result[0]
                     
-            
-            
+
+
+def parse_fastq(filelike):
+    count=0
+    line="NULL"
+    seq=""
+    qual=""
+    name=""
+    while ( True ):
+        if line=="":
+            break
+        while count < 4:
+            line=filelike.readline()
+            #print(line)
+            #print(count)
+            if (count==0):
+                name=line[1:].strip()
+            elif (count==1):
+                seq=line.strip()        
+            elif (count==2):
+                pass  
+            elif (count==3):
+                qual=line.strip()
+            count+=1
+        yield name, seq, qual
+        count=0
+
+
+def printFastq(name, seq, qual, filelike):
+    print ('@'+name, file=filelike)
+    print (seq, file=filelike)
+    print ('+', file=filelike)
+    print (qual, file=filelike)
+    
+
 def main():
-    e = ErrorCorrector(20, 5, 9,  2, 0.5, 0.5, 6000)
+    e = ErrorCorrector(100, 10, 40,  10, 0.5, 0.5, 9999)
+    output = open('output.fastq','w')
+    output.write("")
+    output.close()
+    for name, seq, qual in parse_fastq(open('yeast.fastq','r')):
+        print ("Uncorrected Read: "+ seq)
+        newseq=e.correctRead(seq, qual)
+        print ("Corrected Read: "+ newseq)
+        printFastq('Corrected:'+name, newseq, qual, open('output.fastq','a'))
+
+
+def test():
     s1, s2 = e.correctKmer("TESTKMERA", "XXXXTESTKMERAXXXX", 1800)
     for x in range(0, 100):
         e.correctRead("AAAAAAAAAAAACACACAAATTAGTGA", "@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-    print "TestKmer", e.correctKmer("ACACACAAG", "AAAAAAAAAAAACACACAAATTAGTGA", 1800)
+    print ("TestKmer"+ e.correctKmer("ACACACAAG", "AAAAAAAAAAAACACACAAATTAGTGA", 1800))
     s1, s2 = e.correctKmer("TESTKMERA", "XXXXTESTKMERGXXXX", 500)
-    print s1, s2, e.countmin["TESTKMERG"], e.countmin["TESTKMERA"]
+    print (s1+" "+s2+" "+e.countmin["TESTKMERG"]+" "+ e.countmin["TESTKMERA"])
 
-    print e.correctRead("AAAAAAAAAAAAGACACAGGTTAGTGA", "@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+    print (e.correctRead("AAAAAAAAAAAAGACACAGGTTAGTGA", "@@@@@@@@@@@@@@@@@@@@@@@@@@@@"))
     
-    print e.holdlist
+    print (e.holdlist)
+
     
 
 main()
