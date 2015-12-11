@@ -9,6 +9,7 @@
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
 // Create a new bloomfilter with m bits and k hash functions
+// TODO: Pack integers
 minsketch* minsketch_new(int w, int d) {
 	minsketch *m = malloc(sizeof *m);
 	if (m == NULL) {
