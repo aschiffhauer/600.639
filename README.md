@@ -16,7 +16,7 @@ Note: Untested on Windows
 ## Drivers
 - `tests` Runs all tests (see below)
 - `synthetic` Corrects sequences from synthetic reads (synthetic.fastq)
-- `yeast` Corrects sequences from Saccharomyces cerevisiae (yeast.fastq) reads
+- `yeast` Corrects sequences from Saccharomyces cerevisiae (yeast.fastq) reads into corrected_yeast.fasq
 
 ## Data structures
 - `bloomfilter` Bloom filter implementation
