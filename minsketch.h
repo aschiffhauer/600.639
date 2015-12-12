@@ -6,7 +6,7 @@
 typedef struct {
 	int w;                 // width
 	int d;                 // height (number of hash functions)
-	int **rows;            // matrix
+	unsigned char **rows;  // matrix
 	unsigned int *hashes;  // hash functions
 } minsketch;
 

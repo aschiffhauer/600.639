@@ -2,6 +2,7 @@ CC = gcc
 CFLAGS = -std=c99 -Wall -Wextra 
 
 HEADERS = \
+	algorithm.h \
 	bloomfilter.h \
 	bloomfiltertests.h \
 	error.h \
@@ -16,6 +17,7 @@ HEADERS = \
 	tests.h \
 
 OBJECTS = \
+	algorithm.o \
 	bloomfilter.o \
 	bloomfiltertests.o \
 	error.o \

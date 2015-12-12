@@ -1,17 +1,30 @@
 # Build and run
 
+Requirements: C99 compliant compiler (e.g. GCC or LLVM)
+
 ```
 $ make clean && make
 $ ./tests                 # runs the test suite
 $ ./experiment_synthetic  # runs an experiment on synthetic reads
 $ ./experiment_yeast      # runs an experiment on Saccharomyces cerevisiae (brewer's yeast) reads
-$ ./correct yeast.fastq yeast_corrected.fastq 8 8388608 1 1 # equivalent to ./experiment_yeast
-$ ./kmerprinter yeast_corrected.fastq 8 # outputs all kmers to stdout
 ```
 
-Requirements: C99 compliant compiler (e.g. GCC or LLVM)
+# Verification of results
 
-Note: Untested on Windows
+To verify the results reported in the writeup:
+
+```
+$ chmod +x verify_experiment_yeast.sh     # make executable
+$ ./verify_experiment_yeast.sh            # verify experiment_yeast
+$ chmod +x verify_experiment_synthetic.sh # make executable
+$ ./verify_experiment_yeast.sh            # verify the experiment_yeast
+```
+
+# Usage
+
+```
+$ ./correct (input) (output) (kmer_size) (minsketch_width) (minsketch_height) (frequency_cutoff)
+```
 
 # Code overview
 
@@ -19,8 +32,7 @@ Note: Untested on Windows
 - `tests` Runs all tests (see below)
 - `synthetic` Corrects sequences from synthetic reads (synthetic.fastq)
 - `yeast` Corrects sequences from Saccharomyces cerevisiae (yeast.fastq) reads into corrected_yeast.fasq
-- `correct` ./correct (input) (output) (kmer_size) (minsketch_width) (minsketch_height) (frequency_cutoff)
-- `kmerprinter` ./kmerprinter (input) (kmer_size) 
+- `correct` Performs error correction on any fastq input file `(./correct (input) (output) (kmer_size) (minsketch_width) (minsketch_height) (frequency_cutoff))`
 
 ## Data structures
 - `bloomfilter` Bloom filter implementation
@@ -38,3 +50,9 @@ Note: Untested on Windows
 - `error` Error detection and correction implementation
 - `errortests` Error detection and correction tests
 - `hash` String hash implementation for bloom filters and count-min sketches
+
+# Miscellaneous
+- `unique_kmers` Prints the number of unique kmers and kmers of a certain frequency for a file (`python unique_kmers.py (input) (frequency)`) 
+- `kmerprinter` Prints the kmers of a file to stdout (`./kmerprinter (input) (kmer_size)`)
+- `verify_experiment_yeast` Calculates numbers for yeast experiment (`./verify_experiment_yeast.sh`)
+- `verify_experiment_synthetic` Calculates numbers for synthetic experiment (`./verify_experiment_synthetic.sh`)

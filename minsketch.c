@@ -9,7 +9,6 @@
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
 // Create a new bloomfilter with m bits and k hash functions
-// TODO: Pack integers
 minsketch* minsketch_new(int w, int d) {
 	minsketch *m = malloc(sizeof *m);
 	if (m == NULL) {
@@ -48,7 +47,9 @@ minsketch* minsketch_new(int w, int d) {
 bool minsketch_add(minsketch *m, const char *str) {
 	for (int i = 0; i < m->d; i++) {
 		int j = hash(str, m->hashes[i]) % (m->w);
-		m->rows[i][j]++;
+		if (m->rows[i][j] < ((1 << (sizeof *m->rows[i] * 8)) - 1)) {
+			m->rows[i][j]++;
+		}
 	}
 	return true;
 }
