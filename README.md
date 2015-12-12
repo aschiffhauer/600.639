@@ -26,6 +26,14 @@ $ ./verify_experiment_yeast.sh            # verify the experiment_yeast
 $ ./correct (input) (output) (kmer_size) (minsketch_width) (minsketch_height) (frequency_cutoff)
 ```
 
+## Example
+
+This command is analogous to running `./experiment_yeast`
+
+```
+$ ./correct yeast.fastq yeast_corrected.fastq 8 262144 1 1
+```
+
 # Code overview
 
 ## Drivers
