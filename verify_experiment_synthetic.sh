@@ -1,6 +1,6 @@
 make clean 
-rm -f yeast_kmers
-rm -f yeast_corrected_kmers
+rm -f synthetic_kmers
+rm -f synthetic_corrected_kmers
 make
 ./experiment_synthetic
 ./kmerprinter synthetic.fastq 8 > synthetic_kmers
