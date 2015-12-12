@@ -18,8 +18,8 @@
 }
 
 /*
-Prints the kmers of a file
-./correct <input> <output> <kmer_size> <minsketch_width> <minsketch_height> <frequency_cutoff>
+Prints to stdout the kmers of a file
+./kmerprinter <input> <kmer_size>
 */
 int main(int argc, const char* argv[]) {
 	if (argc != ARGC) {
