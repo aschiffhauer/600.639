@@ -13,7 +13,7 @@
 // Defines a macro that prints out an error message, usage, and exits.
 #define USAGE(...) { \
 	fprintf(stderr, __VA_ARGS__); \
-	fprintf(stderr, "./kmerprinter <input>\n"); \
+	fprintf(stderr, "./kmerprinter <input> <kmer_size>\n"); \
 	return EXIT_FAILURE; \
 }
 

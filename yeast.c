@@ -8,13 +8,15 @@
 
 // Experiment-related constants (file name, kmer size, min sketch dimensions, etc.)
 // 1,380,564 lines / 4 lines per sequence = 345,141 sequences 
-// 345,141 sequences * 16 kmers per sequence = 5,522,256 kmers
-// 5,522,256 kmers * 16 nucleotides per sequence = 88,356,096 nucleotides
-// 88,356,096 nucleotides = 88.4 MB to store all kmers in memory
+// 345,141 sequences * 24 kmers per sequence = 8,283,384 kmers
+// 8,283,384 kmers * 8 nucleotides per sequence = 66,267,072 nucleotides
+// 66,267,072 nucleotides = 66.2 MB to store all kmers in memory
+// However, there are exactly 970,056 unique 8-mers.
+// Thus, it takes 970,056 * 9 bytes = 8.730504 megabytes
 #define FASTQ_FILE_NAME "yeast.fastq"
 #define FASTQ_CORRECTED_FILE_NAME "yeast_corrected.fastq"
 #define KMER_SIZE 8
-#define MINSKETCH_WIDTH 0x800000 // 8 megabytes (~10% of the memory!)
+#define MINSKETCH_WIDTH 0x800000 // 1 megabytes (~10% of the memory!)
 #define MINSKETCH_HEIGHT 1
 #define FREQUENCY_CUTOFF 1
 
