@@ -6,6 +6,7 @@
 #include "fastq.h"
 #include "error.h"
 
+// Corrects a FASTQ file
 bool algorithm_correct(const char *input_file_name, const char *output_file_name, int kmer_size, int minsketch_width, int minsketch_height, int frequency_cutoff) {
 	if (input_file_name == NULL || *input_file_name == '\0'
   ||  output_file_name == NULL || *output_file_name == '\0'

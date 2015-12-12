@@ -58,6 +58,7 @@ $ ./correct yeast.fastq yeast_corrected.fastq 8 262144 1 1
 - `error` Error detection and correction implementation
 - `errortests` Error detection and correction tests
 - `hash` String hash implementation for bloom filters and count-min sketches
+- `algorithm` The driving algorithm that is used by all drivers to perform corrections
 
 # Miscellaneous
 - `unique_kmers` Prints the number of unique kmers and kmers of a certain frequency for a file (`python unique_kmers.py (input) (frequency)`) 

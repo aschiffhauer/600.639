@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+// Corrects a FASTQ file
 bool algorithm_correct(const char *input_file_name, const char *output_file_name, int kmer_size, int minsketch_width, int minsketch_height, int frequency_cutoff);
 
 #endif
