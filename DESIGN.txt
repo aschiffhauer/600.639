@@ -1,0 +1,166 @@
+Design Documentation
+
+#FastQ Parser (Generator)
+
+Parser Takes in a single fastq filelike
+(ie sometime like sys.stdin or (f=)open('something.fastq','r')
+
+ Using a counter starting with 0 and 4 strings, 1 set to "NULL"(for the dowhile)
+
+ while true:
+
+     if line is empty (returned at end of file)
+         break (NULL at first iterration so does not break)
+
+     while counter < 4 and line is not empty: (0,1,2,3 then reset)
+         line = next line from file
+         if line is empty
+             break
+         if count is 0
+             make name string the line 
+         if count is 1
+             make sequence the line
+         if count is 2
+             do nothing
+         if count is 3
+             make quality the line
+     if line is not empty yield name, seq, qual
+             *(generator function ill explain this one...)*
+     reset count to zero, and go back to start of while true
+
+
+#FastQ printer and Logger
+
+ Logging system allows for dynamic printing to various files depending on
+ the "urgency" or type of command
+
+ GLOBALS::printFastQ: //Convienience function that takes a name, seq, quality string trio and a changes int
+             // and prints it to the output file (may be able to set this later)
+
+        if changed > 0:
+             outputter=self.ChangedOutputter
+         if changed = 0:
+            outputter=self.UnchangedOutputter
+
+ 
+        outputter.log(self.PRINT, name)
+        outputter.log(self.PRINT, seq)
+        outputter.log(self.PRINT, +)
+        outputter.log(self.PRINT, qual)
+
+
+//Other logger abilities include printing to 5 files
+//These include errors of various severity with each file removing the
+// lower severity errors of the last ie all has everything
+ // info does not have debug, warning doesnt have info, etc
+ all.log info.log warning.log error.log critical.log
+
+ The logging system by default prints any ERROR: or CRITICAL: class errors
+ to the output file as well
+
+ As well the system prints to two separate files for the changed and unchanged
+ outputs
+
+
+GLOBALS just holds the actual loggers themself as well as sets them up on initialization
+        //Print FastQ function is a member of global for convinience in accessing
+         //The Output loggers
+
+
+ #class ErrorCorrector
+     ErrorCorrector handles all of the error correction for a read,
+     once initialized it takes in reads one at a time via the correctRead function
+
+
+    Fastq files themself can be defined by a list of filenames (adding now)
+     or each read can be read in main (sloppy but its how its done currently...)
+
+
+
+     ##Members
+        Various thresholds determined by the user initializion
+        kqthresh is the maximum quality value (33) * a factor  * Kmerlength
+         this is used for determining which kmers to add initially
+        rqthresh does the same but for reads
+        Klength stores kmer length
+         Rlength reads
+         ethresh stores the number of "low frequency" kmers in a read you are willing
+         to tolerate
+         filledthresh= the rows* the avg number of occurances of each kmer for the table
+         to be considered filled
+
+        othresh is a factor of the avg occurances of a filled table, this determines
+         "how inaccurate" a kmer ahs to be to be considered an "error"
+
+         countminh,w: stores the dimesions of the countmin sketch
+
+         filled stores how many kmers were added to the count min structure so far
+         when filled is greater than filled thresh, correction starts happening
+
+         countmin stores the datastructure itself
+
+         holdlist holds reads determined to be too low quality for 
+ 
+    ##helpers
+     sumQString:
+     //takes in a quality string and returns an int representing the overall
+     //quality of said string
+
+#   #####################################
+
+     #correctRead(self, seq, qual):
+         using an error counter and a changed counter
+
+         for each kmer in seq
+             oldfreq = the freq of unchanged sequence
+             kmserS = the kmer itself
+             kmerQ = the Quality string, immediatly fed to sumQString and turned
+                 into an int
+             kmerNew, freq = self.correctKmer(kmers, seq, kmerq) //Corrects the kmer
+             if frequency of new highest found kmer is lower than the occurance threshold
+                 add one to error counter
+             if new kmer is different from old kmer and frequency is higher:
+                 replace the old kmer with the new kmer
+                     add one to changed counter
+                replace quality of the old qual string with quality +5
+             if error counter is higher than threshold, consider the kmer invalid
+         return new sequence, new quality, changed counter
+             
+    
+
+         
+    #correctKmer(self,  kmer, read, qualityscore):
+         if filled < filled thresh:
+             if the quality is high enough:
+                 add to the count min and add one to filled
+         else
+             return hold signal to correctRead
+
+         if(filled > filled thresh):
+
+             freq = kmers freq in structure
+             if freq > othresh:
+                 kmer is good, return
+             if freq < othresh:
+                 make a list
+                 for each in the nucleotides
+                     newkmer = kmer-lastelement + nucleotide
+                        freq = freq of newkmer in structure
+                         add freq and kmer to list
+                 get the max freq of the list
+                 return the new kmer and new frequency
+
+
+
+#Main
+
+    make error corrector
+    currently,
+     //for each read in fastq
+     for name, seq, qual in parse_fastq(open('fastq','read')):
+            //Correct each read
+        newseq, newqual, changed=e.correctRead(name, seq, qual)
+             //Print each each to output
+        printFastq(name, newseq, newqual, changed)
+
+ 
